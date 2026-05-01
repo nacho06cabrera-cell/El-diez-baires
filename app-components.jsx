@@ -154,15 +154,15 @@ function ProductCardCollectible({ product, onAdd }) {
   );
 }
 
-function Catalog({ onAdd, cardVariant, showStamp }) {
+function Catalog({ products = [], loading, onAdd, cardVariant, showStamp }) {
   const [filters, setFilters] = useState({ country: "Todos", type: "Todos", era: "Todos", version: "Todos" });
-  const filtered = useMemo(() => window.PRODUCTS.filter((p) => {
+  const filtered = useMemo(() => products.filter((p) => {
     if (filters.country !== "Todos" && p.country !== filters.country) return false;
     if (filters.type !== "Todos" && p.type !== filters.type) return false;
     if (filters.era !== "Todos" && p.era !== filters.era) return false;
     if (filters.version !== "Todos" && p.version !== filters.version) return false;
     return true;
-  }), [filters]);
+  }), [products, filters]);
   return (
     <section id="catalogo" className="catalog">
       <header className="section-head reveal">
@@ -174,8 +174,24 @@ function Catalog({ onAdd, cardVariant, showStamp }) {
       </header>
       <FilterBar filters={filters} setFilters={setFilters} count={filtered.length} />
       <div className={"grid grid-" + cardVariant}>
-        {filtered.length === 0 && <div className="empty"><span>Ninguna camiseta con esos filtros.</span><span>Probá con otra combinación.</span></div>}
-        {filtered.map((p) => cardVariant === "collectible"
+        {loading && (
+          <div className="empty">
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--gris)" }}>Cargando…</span>
+          </div>
+        )}
+        {!loading && products.length === 0 && (
+          <div className="empty">
+            <span>El catálogo está vacío por ahora.</span>
+            <span>Pronto van a aparecer las camisetas.</span>
+          </div>
+        )}
+        {!loading && products.length > 0 && filtered.length === 0 && (
+          <div className="empty">
+            <span>Ninguna camiseta con esos filtros.</span>
+            <span>Probá con otra combinación.</span>
+          </div>
+        )}
+        {!loading && filtered.map((p) => cardVariant === "collectible"
           ? <ProductCardCollectible key={p.id} product={p} onAdd={onAdd} />
           : <ProductCardEditorial key={p.id} product={p} onAdd={onAdd} showStamp={showStamp} />)}
       </div>

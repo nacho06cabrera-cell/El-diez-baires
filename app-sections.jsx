@@ -120,10 +120,21 @@ function Footer() {
 }
 
 function App() {
+  const { useEffect } = React;
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [cartOpen, setCartOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [pending, setPending] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch(() => setProducts([]))
+      .finally(() => setLoadingProducts(false));
+  }, []);
 
   const onAdd = (product) => setPending(product);
   const onConfirm = (size) => {
@@ -154,7 +165,7 @@ function App() {
         </div>
       </div>
 
-      <Catalog onAdd={onAdd} cardVariant={tweaks.cardVariant} showStamp={tweaks.showStamp} />
+      <Catalog products={products} loading={loadingProducts} onAdd={onAdd} cardVariant={tweaks.cardVariant} showStamp={tweaks.showStamp} />
       <Historia showStamp={tweaks.showStamp} />
       <Testimonios />
       <Footer />

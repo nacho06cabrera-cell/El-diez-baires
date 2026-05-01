@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin · El Diez Baires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,900&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ── Reset & tokens ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --negro:  #0E1116;
+  --tinta:  #11151B;
+  --blanco: #F4F1EA;
+  --blanco-puro: #FFFFFF;
+  --celeste: #74ACDF;
+  --azul:   #0A2A5E;
+  --azul-noche: #061638;
+  --oro:    #F6B40E;
+  --oro-osc: #C98C00;
+  --gris:   #6B6E76;
+  --gris-cl: #D9D5CC;
+  --linea:  rgba(14,17,22,0.12);
+  --linea-w: rgba(244,241,234,0.14);
+  --display: "Playfair Display", serif;
+  --sans:   "Inter Tight", sans-serif;
+  --mono:   "JetBrains Mono", monospace;
+  --radius: 6px;
+}
+body { font-family: var(--sans); background: var(--negro); color: var(--blanco); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+input, select, textarea { font: inherit; }
+
+/* ── Login ──────────────────────────────────────────────── */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--azul-noche) 0%, var(--negro) 60%);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+#login-screen::before {
+  content: "10";
+  position: absolute;
+  font-family: var(--display);
+  font-weight: 900;
+  font-style: italic;
+  font-size: min(70vw, 700px);
+  color: var(--celeste);
+  opacity: 0.04;
+  right: -8vw;
+  bottom: -12vh;
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+}
+.login-card {
+  background: rgba(244,241,234,0.04);
+  border: 1px solid var(--linea-w);
+  padding: 56px 48px;
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(8px);
+}
+.login-logo {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+.login-logo em { font-style: italic; color: var(--oro); margin-left: 4px; }
+.login-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gris);
+  margin-bottom: 40px;
+  display: block;
+}
+.login-card h2 {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 28px;
+  color: rgba(244,241,234,0.8);
+}
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.field label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+.field input, .field select, .field textarea {
+  background: rgba(244,241,234,0.06);
+  border: 1px solid var(--linea-w);
+  color: var(--blanco);
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 15px;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--celeste);
+}
+.field select option { background: var(--negro); color: var(--blanco); }
+.field textarea { min-height: 80px; resize: vertical; }
+.error-msg {
+  background: rgba(220,38,38,0.12);
+  border: 1px solid rgba(220,38,38,0.3);
+  color: #FCA5A5;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+}
+.error-msg.show { display: block; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: transform 0.12s, background 0.15s, opacity 0.15s;
+  cursor: pointer;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.btn-primary { background: var(--oro); color: var(--negro); }
+.btn-primary:hover:not(:disabled) { background: #ffc31f; }
+.btn-ghost { color: var(--blanco); border-color: var(--linea-w); background: transparent; }
+.btn-ghost:hover { background: rgba(244,241,234,0.06); }
+.btn-danger { color: #FCA5A5; border-color: rgba(220,38,38,0.3); background: transparent; }
+.btn-danger:hover { background: rgba(220,38,38,0.1); }
+.btn-sm { padding: 7px 14px; font-size: 10px; }
+.btn-full { width: 100%; }
+
+/* ── Shell ──────────────────────────────────────────────── */
+#app { display: none; min-height: 100vh; flex-direction: column; }
+#app.show { display: flex; }
+
+.topbar {
+  background: var(--azul-noche);
+  border-bottom: 1px solid var(--linea-w);
+  padding: 0 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar-logo {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.topbar-logo em { font-style: italic; color: var(--oro); margin-left: 4px; }
+.topbar-logo span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gris);
+  margin-left: 12px;
+}
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-user {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+
+.main { flex: 1; padding: 48px 40px; max-width: 1300px; width: 100%; margin: 0 auto; }
+
+/* ── Página header ──────────────────────────────────────── */
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.page-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--celeste);
+  display: block;
+  margin-bottom: 8px;
+}
+.page-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(32px, 4vw, 56px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+.page-title em { font-style: italic; color: var(--oro); font-weight: 400; }
+.stats-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+.stat-card {
+  background: rgba(244,241,234,0.04);
+  border: 1px solid var(--linea-w);
+  padding: 20px 28px;
+  flex: 1;
+  min-width: 140px;
+}
+.stat-card b {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 36px;
+  color: var(--oro);
+  display: block;
+}
+.stat-card small {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+
+/* ── Tabla de productos ─────────────────────────────────── */
+.table-wrap {
+  border: 1px solid var(--linea-w);
+  overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; }
+thead { background: rgba(244,241,234,0.04); }
+th {
+  padding: 12px 18px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gris);
+  border-bottom: 1px solid var(--linea-w);
+  white-space: nowrap;
+}
+td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--linea-w);
+  font-size: 14px;
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(244,241,234,0.025); }
+.td-name { font-weight: 600; }
+.td-price { font-family: var(--display); font-weight: 900; font-size: 16px; color: var(--oro); white-space: nowrap; }
+.td-badge {
+  display: inline-block;
+  background: rgba(244,241,234,0.08);
+  border: 1px solid var(--linea-w);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.td-actions { display: flex; gap: 8px; align-items: center; }
+.palette-dots { display: flex; gap: 4px; align-items: center; }
+.palette-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--gris);
+}
+.empty-state strong {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 24px;
+  color: rgba(244,241,234,0.5);
+  display: block;
+  margin-bottom: 8px;
+}
+.empty-state span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
+
+/* ── Modal ──────────────────────────────────────────────── */
+.modal-scrim {
+  position: fixed; inset: 0;
+  background: rgba(6,22,56,0.75);
+  z-index: 200;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+  backdrop-filter: blur(4px);
+}
+.modal-scrim.show { display: flex; }
+.modal {
+  background: var(--negro);
+  border: 1px solid var(--linea-w);
+  width: 100%;
+  max-width: 640px;
+  padding: 40px;
+  position: relative;
+  animation: slideup 0.2s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes slideup { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+.modal-head h3 {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.modal-x {
+  background: none;
+  border: 1px solid var(--linea-w);
+  color: var(--blanco);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+.modal-x:hover { background: rgba(244,241,234,0.08); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-sep {
+  border: none;
+  border-top: 1px solid var(--linea-w);
+  margin: 24px 0 18px;
+}
+.field-note {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gris);
+  margin-top: 4px;
+}
+.palette-preview {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+.palette-preview-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); }
+.upload-area {
+  border: 1px dashed rgba(116,172,223,0.4);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  border-radius: var(--radius);
+  position: relative;
+}
+.upload-area:hover { border-color: var(--celeste); background: rgba(116,172,223,0.04); }
+.upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.upload-area p { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
+.upload-area strong { font-size: 13px; color: var(--celeste); display: block; margin-bottom: 4px; }
+.upload-preview { max-height: 120px; max-width: 100%; margin: 8px auto 0; display: block; }
+.modal-foot { display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; }
+
+/* ── Confirm modal ──────────────────────────────────────── */
+#confirm-modal .modal { max-width: 400px; }
+#confirm-modal h3 { font-family: var(--display); font-style: italic; font-size: 22px; font-weight: 400; margin-bottom: 12px; }
+#confirm-modal p { color: rgba(244,241,234,0.7); font-size: 14px; line-height: 1.5; }
+#confirm-modal .modal-foot { margin-top: 24px; }
+
+/* ── Password modal ─────────────────────────────────────── */
+#password-modal .modal { max-width: 420px; }
+
+/* ── Toast ──────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--azul-noche);
+  border: 1px solid var(--linea-w);
+  color: var(--blanco);
+  padding: 12px 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.success { border-color: rgba(52,199,89,0.4); color: #86EFAC; }
+#toast.error { border-color: rgba(220,38,38,0.4); color: #FCA5A5; }
+
+/* ── Loading spinner ────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(244,241,234,0.2);
+  border-top-color: var(--oro);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .topbar { padding: 0 20px; }
+  .main { padding: 28px 20px; }
+  .form-row { grid-template-columns: 1fr; }
+  .modal { padding: 28px 20px; }
+  .page-head { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">EL DIEZ <em>BAIRES</em></div>
+    <span class="login-sub">Panel de administración</span>
+    <h2>Accedé con tu cuenta.</h2>
+    <div class="error-msg" id="login-error"></div>
+    <div class="field">
+      <label>Usuario</label>
+      <input type="text" id="login-user" placeholder="admin" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button class="btn btn-primary btn-full" id="login-btn">Entrar →</button>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0">
+      <span class="topbar-logo">EL DIEZ <em>BAIRES</em></span>
+      <span class="topbar-logo" style="font-size:11px;font-family:var(--mono);letter-spacing:0.22em;color:var(--gris);font-weight:400;margin-left:14px">ADMIN</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="topbar-username"></span>
+      <button class="btn btn-ghost btn-sm" id="change-pass-btn">Cambiar contraseña</button>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Salir</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-head">
+      <div>
+        <span class="page-eyebrow">— Catálogo</span>
+        <h1 class="page-title">Tus <em>camisetas.</em></h1>
+      </div>
+      <button class="btn btn-primary" id="add-btn">+ Agregar camiseta</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><b id="stat-total">0</b><small>camisetas cargadas</small></div>
+      <div class="stat-card"><b id="stat-retro">0</b><small>retro / vintage</small></div>
+      <div class="stat-card"><b id="stat-actual">0</b><small>actuales</small></div>
+      <div class="stat-card"><b id="stat-paises">0</b><small>países</small></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Camiseta</th>
+            <th>País</th>
+            <th>Tipo</th>
+            <th>Época</th>
+            <th>Año</th>
+            <th>Precio</th>
+            <th>Paleta</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="products-tbody">
+          <tr><td colspan="8"><div class="empty-state"><span class="spinner"></span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL ADD/EDIT -->
+<div class="modal-scrim" id="product-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Nueva camiseta</h3>
+      <button class="modal-x" id="modal-close-btn">✕</button>
+    </div>
+
+    <div class="error-msg" id="modal-error"></div>
+
+    <div class="form-row">
+      <div class="field" style="grid-column:1/-1">
+        <label>Nombre <span style="color:#F87171">*</span></label>
+        <input type="text" id="f-name" placeholder="Argentina · Mundial '86" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Subtítulo</label>
+      <input type="text" id="f-subtitle" placeholder="Albiceleste · Local" />
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>País <span style="color:#F87171">*</span></label>
+        <select id="f-country">
+          <option value="">— Seleccioná —</option>
+          <option>Argentina</option>
+          <option>Italia</option>
+          <option>España</option>
+          <option>Inglaterra</option>
+          <option>Brasil</option>
+          <option>Francia</option>
+          <option>Alemania</option>
+          <option>Uruguay</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo <span style="color:#F87171">*</span></label>
+        <select id="f-type">
+          <option value="">— Seleccioná —</option>
+          <option>Selección</option>
+          <option>Club</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Época <span style="color:#F87171">*</span></label>
+        <select id="f-era">
+          <option value="">— Seleccioná —</option>
+          <option>Retro</option>
+          <option>Actual</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Versión <span style="color:#F87171">*</span></label>
+        <select id="f-version">
+          <option value="">— Seleccioná —</option>
+          <option>Local</option>
+          <option>Visitante</option>
+          <option>Tercera</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Año <span style="color:#F87171">*</span></label>
+        <input type="number" id="f-year" placeholder="1986" min="1900" max="2099" />
+      </div>
+      <div class="field">
+        <label>Precio (ARS) <span style="color:#F87171">*</span></label>
+        <input type="number" id="f-price" placeholder="89000" min="0" step="500" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Badge / etiqueta especial</label>
+      <input type="text" id="f-badge" placeholder="El Diez, ★★★, Scudetto…" />
+      <span class="field-note">Aparece encima de la camiseta en la tarjeta. Opcional.</span>
+    </div>
+    <div class="field">
+      <label>Descripción</label>
+      <textarea id="f-desc" placeholder="Réplica del clásico bastón celeste y blanco…"></textarea>
+    </div>
+
+    <hr class="form-sep" />
+    <div class="form-row">
+      <div class="field">
+        <label>Color primario <span style="color:#F87171">*</span></label>
+        <input type="color" id="f-color1" value="#FFFFFF" style="height:42px;padding:4px 8px;" />
+      </div>
+      <div class="field">
+        <label>Color secundario <span style="color:#F87171">*</span></label>
+        <input type="color" id="f-color2" value="#74ACDF" style="height:42px;padding:4px 8px;" />
+      </div>
+    </div>
+    <div class="palette-preview">
+      <div class="palette-preview-dot" id="prev-color1"></div>
+      <div class="palette-preview-dot" id="prev-color2"></div>
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;color:var(--gris);text-transform:uppercase;margin-left:4px">Vista previa paleta</span>
+    </div>
+
+    <hr class="form-sep" />
+    <div class="field">
+      <label>Imagen de la camiseta</label>
+      <div class="upload-area" id="upload-area">
+        <input type="file" id="f-image" accept="image/*" />
+        <strong id="upload-label">Subir imagen</strong>
+        <p>JPG, PNG, WEBP — máx. 8 MB</p>
+        <img id="upload-preview" class="upload-preview" style="display:none" alt="" />
+      </div>
+      <span class="field-note" id="upload-note">Si no subís imagen se muestra la silueta SVG.</span>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="modal-cancel-btn">Cancelar</button>
+      <button class="btn btn-primary" id="modal-save-btn">Guardar camiseta →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR BORRAR -->
+<div class="modal-scrim" id="confirm-modal">
+  <div class="modal">
+    <h3>¿Eliminás esta camiseta?</h3>
+    <p id="confirm-product-name" style="margin-top:8px;color:var(--gris)"></p>
+    <p style="margin-top:12px">Esta acción no se puede deshacer.</p>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="confirm-cancel-btn">No, volver</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CAMBIAR CONTRASEÑA -->
+<div class="modal-scrim" id="password-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Cambiar contraseña</h3>
+      <button class="modal-x" id="pass-modal-close">✕</button>
+    </div>
+    <div class="error-msg" id="pass-error"></div>
+    <div class="field">
+      <label>Contraseña actual</label>
+      <input type="password" id="pass-current" />
+    </div>
+    <div class="field">
+      <label>Nueva contraseña</label>
+      <input type="password" id="pass-new" />
+    </div>
+    <div class="field">
+      <label>Confirmar nueva contraseña</label>
+      <input type="password" id="pass-confirm" />
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="pass-cancel-btn">Cancelar</button>
+      <button class="btn btn-primary" id="pass-save-btn">Cambiar contraseña →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ── Utilidades ─────────────────────────────────────────────────────────────
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+
+let TOKEN = localStorage.getItem('eldiez_token') || '';
+let currentProducts = [];
+let editingId = null;
+let deletingId = null;
+let pendingImageFile = null;
+
+function formatPrice(n) {
+  return '$' + Number(n).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+}
+
+function toast(msg, type = 'success') {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 2800);
+}
+
+function showError(elId, msg) {
+  const el = $('#' + elId);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearError(elId) {
+  const el = $('#' + elId);
+  el.textContent = '';
+  el.classList.remove('show');
+}
+
+// ── API ────────────────────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json', ...(TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {}) },
+  };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Error del servidor');
+  return data;
+}
+
+async function uploadImage(file) {
+  const fd = new FormData();
+  fd.append('image', file);
+  const res = await fetch('/api/upload', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN }, body: fd });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Error al subir imagen');
+  return data.url;
+}
+
+// ── Auth ───────────────────────────────────────────────────────────────────
+async function checkAuth() {
+  if (!TOKEN) return showLogin();
+  try {
+    await api('GET', '/api/products');
+    showApp();
+  } catch {
+    TOKEN = '';
+    localStorage.removeItem('eldiez_token');
+    showLogin();
+  }
+}
+
+function showLogin() {
+  $('#login-screen').style.display = 'flex';
+  $('#app').classList.remove('show');
+}
+
+function showApp() {
+  $('#login-screen').style.display = 'none';
+  $('#app').classList.add('show');
+  const payload = TOKEN ? JSON.parse(atob(TOKEN.split('.')[1])) : {};
+  $('#topbar-username').textContent = payload.username || 'admin';
+  loadProducts();
+}
+
+$('#login-btn').addEventListener('click', async () => {
+  clearError('login-error');
+  const username = $('#login-user').value.trim();
+  const password = $('#login-pass').value;
+  if (!username || !password) return showError('login-error', 'Completá usuario y contraseña.');
+  $('#login-btn').disabled = true;
+  $('#login-btn').innerHTML = '<span class="spinner"></span> Entrando…';
+  try {
+    const data = await api('POST', '/api/auth/login', { username, password });
+    TOKEN = data.token;
+    localStorage.setItem('eldiez_token', TOKEN);
+    showApp();
+  } catch (e) {
+    showError('login-error', e.message);
+  } finally {
+    $('#login-btn').disabled = false;
+    $('#login-btn').textContent = 'Entrar →';
+  }
+});
+
+$('#login-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#login-btn').click(); });
+
+$('#logout-btn').addEventListener('click', () => {
+  TOKEN = '';
+  localStorage.removeItem('eldiez_token');
+  showLogin();
+});
+
+// ── Cambiar contraseña ────────────────────────────────────────────────────
+$('#change-pass-btn').addEventListener('click', () => {
+  clearError('pass-error');
+  $('#pass-current').value = '';
+  $('#pass-new').value = '';
+  $('#pass-confirm').value = '';
+  $('#password-modal').classList.add('show');
+});
+$('#pass-modal-close, #pass-cancel-btn').forEach
+  ? $$('#pass-modal-close, #pass-cancel-btn').forEach(b => b.addEventListener('click', () => $('#password-modal').classList.remove('show')))
+  : null;
+['#pass-modal-close', '#pass-cancel-btn'].forEach(sel => {
+  $(sel)?.addEventListener('click', () => $('#password-modal').classList.remove('show'));
+});
+$('#pass-save-btn').addEventListener('click', async () => {
+  clearError('pass-error');
+  const curr = $('#pass-current').value;
+  const next = $('#pass-new').value;
+  const conf = $('#pass-confirm').value;
+  if (!curr || !next || !conf) return showError('pass-error', 'Completá todos los campos.');
+  if (next !== conf) return showError('pass-error', 'Las contraseñas nuevas no coinciden.');
+  if (next.length < 6) return showError('pass-error', 'La contraseña debe tener al menos 6 caracteres.');
+  try {
+    await api('POST', '/api/auth/change-password', { currentPassword: curr, newPassword: next });
+    $('#password-modal').classList.remove('show');
+    toast('Contraseña actualizada correctamente');
+  } catch (e) {
+    showError('pass-error', e.message);
+  }
+});
+
+// ── Productos ─────────────────────────────────────────────────────────────
+async function loadProducts() {
+  try {
+    currentProducts = await api('GET', '/api/products');
+    renderTable();
+    updateStats();
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+function updateStats() {
+  $('#stat-total').textContent = currentProducts.length;
+  $('#stat-retro').textContent = currentProducts.filter(p => p.era === 'Retro').length;
+  $('#stat-actual').textContent = currentProducts.filter(p => p.era === 'Actual').length;
+  const paises = new Set(currentProducts.map(p => p.country)).size;
+  $('#stat-paises').textContent = paises;
+}
+
+function renderTable() {
+  const tbody = $('#products-tbody');
+  if (currentProducts.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+      <strong>Ninguna camiseta cargada todavía.</strong>
+      <span>Usá el botón "Agregar camiseta" para empezar.</span>
+    </div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = currentProducts.map(p => `
+    <tr>
+      <td>
+        <div class="td-name">${escHtml(p.name)}</div>
+        ${p.subtitle ? `<div style="font-size:12px;color:var(--gris);font-style:italic">${escHtml(p.subtitle)}</div>` : ''}
+      </td>
+      <td>${escHtml(p.country)}</td>
+      <td><span class="td-badge">${escHtml(p.type)}</span></td>
+      <td><span class="td-badge">${escHtml(p.era)}</span></td>
+      <td style="font-family:var(--mono)">${p.year}</td>
+      <td class="td-price">${formatPrice(p.price)}</td>
+      <td>
+        <div class="palette-dots">
+          <div class="palette-dot" style="background:${escHtml(p.palette[0])}"></div>
+          <div class="palette-dot" style="background:${escHtml(p.palette[1])}"></div>
+        </div>
+      </td>
+      <td>
+        <div class="td-actions">
+          <button class="btn btn-ghost btn-sm" onclick="openEdit('${escHtml(p.id)}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="openDelete('${escHtml(p.id)}')">Borrar</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function escHtml(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Modal add/edit ─────────────────────────────────────────────────────────
+function openAdd() {
+  editingId = null;
+  pendingImageFile = null;
+  clearError('modal-error');
+  $('#modal-title').textContent = 'Nueva camiseta';
+  ['name','subtitle','badge','desc'].forEach(k => $('#f-'+k).value = '');
+  ['country','type','era','version'].forEach(k => $('#f-'+k).value = '');
+  $('#f-year').value = '';
+  $('#f-price').value = '';
+  $('#f-color1').value = '#FFFFFF';
+  $('#f-color2').value = '#74ACDF';
+  updatePalettePreview();
+  resetUpload();
+  $('#product-modal').classList.add('show');
+  $('#f-name').focus();
+}
+
+function openEdit(id) {
+  const p = currentProducts.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  pendingImageFile = null;
+  clearError('modal-error');
+  $('#modal-title').textContent = 'Editar camiseta';
+  $('#f-name').value = p.name;
+  $('#f-subtitle').value = p.subtitle || '';
+  $('#f-badge').value = p.badge || '';
+  $('#f-desc').value = p.description || '';
+  $('#f-country').value = p.country;
+  $('#f-type').value = p.type;
+  $('#f-era').value = p.era;
+  $('#f-version').value = p.version;
+  $('#f-year').value = p.year;
+  $('#f-price').value = p.price;
+  $('#f-color1').value = p.palette[0] || '#FFFFFF';
+  $('#f-color2').value = p.palette[1] || '#74ACDF';
+  updatePalettePreview();
+  if (p.image) {
+    $('#upload-preview').src = p.image;
+    $('#upload-preview').style.display = 'block';
+    $('#upload-label').textContent = 'Cambiar imagen';
+    $('#upload-note').textContent = 'Imagen actual mostrada arriba. Subí otra para reemplazarla.';
+  } else {
+    resetUpload();
+  }
+  $('#product-modal').classList.add('show');
+  $('#f-name').focus();
+}
+
+function closeProductModal() {
+  $('#product-modal').classList.remove('show');
+  editingId = null;
+  pendingImageFile = null;
+}
+
+$('#add-btn').addEventListener('click', openAdd);
+$('#modal-close-btn').addEventListener('click', closeProductModal);
+$('#modal-cancel-btn').addEventListener('click', closeProductModal);
+
+$('#product-modal').addEventListener('click', (e) => {
+  if (e.target === $('#product-modal')) closeProductModal();
+});
+
+// Palette preview
+function updatePalettePreview() {
+  $('#prev-color1').style.background = $('#f-color1').value;
+  $('#prev-color2').style.background = $('#f-color2').value;
+}
+$('#f-color1').addEventListener('input', updatePalettePreview);
+$('#f-color2').addEventListener('input', updatePalettePreview);
+
+// Image upload preview
+$('#f-image').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  pendingImageFile = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    $('#upload-preview').src = ev.target.result;
+    $('#upload-preview').style.display = 'block';
+    $('#upload-label').textContent = file.name;
+    $('#upload-note').textContent = 'Imagen lista para subir al guardar.';
+  };
+  reader.readAsDataURL(file);
+});
+
+function resetUpload() {
+  $('#f-image').value = '';
+  $('#upload-preview').src = '';
+  $('#upload-preview').style.display = 'none';
+  $('#upload-label').textContent = 'Subir imagen';
+  $('#upload-note').textContent = 'Si no subís imagen se muestra la silueta SVG.';
+}
+
+$('#modal-save-btn').addEventListener('click', async () => {
+  clearError('modal-error');
+  const name = $('#f-name').value.trim();
+  const country = $('#f-country').value;
+  const type = $('#f-type').value;
+  const era = $('#f-era').value;
+  const version = $('#f-version').value;
+  const year = $('#f-year').value;
+  const price = $('#f-price').value;
+
+  if (!name) return showError('modal-error', 'El nombre es obligatorio.');
+  if (!country) return showError('modal-error', 'Seleccioná un país.');
+  if (!type) return showError('modal-error', 'Seleccioná un tipo (Selección / Club).');
+  if (!era) return showError('modal-error', 'Seleccioná la época.');
+  if (!version) return showError('modal-error', 'Seleccioná la versión.');
+  if (!year || isNaN(year)) return showError('modal-error', 'Ingresá un año válido.');
+  if (!price || isNaN(price) || Number(price) <= 0) return showError('modal-error', 'Ingresá un precio válido.');
+
+  const btn = $('#modal-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Guardando…';
+
+  try {
+    let imageUrl = editingId ? (currentProducts.find(p => p.id === editingId)?.image || null) : null;
+    if (pendingImageFile) imageUrl = await uploadImage(pendingImageFile);
+
+    const payload = {
+      name,
+      subtitle: $('#f-subtitle').value.trim(),
+      country,
+      type,
+      era,
+      version,
+      year: Number(year),
+      price: Number(price),
+      palette: [$('#f-color1').value, $('#f-color2').value],
+      badge: $('#f-badge').value.trim() || null,
+      description: $('#f-desc').value.trim(),
+      image: imageUrl,
+    };
+
+    if (editingId) {
+      await api('PUT', `/api/products/${editingId}`, payload);
+      toast('Camiseta actualizada ✓');
+    } else {
+      await api('POST', '/api/products', payload);
+      toast('Camiseta agregada ✓');
+    }
+
+    closeProductModal();
+    await loadProducts();
+  } catch (e) {
+    showError('modal-error', e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Guardar camiseta →';
+  }
+});
+
+// ── Borrar ─────────────────────────────────────────────────────────────────
+function openDelete(id) {
+  deletingId = id;
+  const p = currentProducts.find(x => x.id === id);
+  $('#confirm-product-name').textContent = p ? p.name : '';
+  $('#confirm-modal').classList.add('show');
+}
+
+$('#confirm-cancel-btn').addEventListener('click', () => {
+  $('#confirm-modal').classList.remove('show');
+  deletingId = null;
+});
+
+$('#confirm-modal').addEventListener('click', (e) => {
+  if (e.target === $('#confirm-modal')) {
+    $('#confirm-modal').classList.remove('show');
+    deletingId = null;
+  }
+});
+
+$('#confirm-ok-btn').addEventListener('click', async () => {
+  if (!deletingId) return;
+  const btn = $('#confirm-ok-btn');
+  btn.disabled = true;
+  try {
+    await api('DELETE', `/api/products/${deletingId}`);
+    toast('Camiseta eliminada');
+    $('#confirm-modal').classList.remove('show');
+    deletingId = null;
+    await loadProducts();
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ── Init ───────────────────────────────────────────────────────────────────
+checkAuth();
+</script>
+</body>
+</html>
