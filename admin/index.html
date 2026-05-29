@@ -8,438 +8,214 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,900&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
-/* ── Reset & tokens ─────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --negro:  #0E1116;
-  --tinta:  #11151B;
-  --blanco: #F4F1EA;
-  --blanco-puro: #FFFFFF;
-  --celeste: #74ACDF;
-  --azul:   #0A2A5E;
-  --azul-noche: #061638;
-  --oro:    #F6B40E;
-  --oro-osc: #C98C00;
-  --gris:   #6B6E76;
-  --gris-cl: #D9D5CC;
-  --linea:  rgba(14,17,22,0.12);
-  --linea-w: rgba(244,241,234,0.14);
+  --negro: #0E1116; --tinta: #11151B; --blanco: #F4F1EA; --blanco-puro: #FFFFFF;
+  --celeste: #74ACDF; --azul: #0A2A5E; --azul-noche: #061638;
+  --oro: #F6B40E; --gris: #6B6E76; --gris-cl: #D9D5CC; --linea-w: rgba(244,241,234,0.1);
   --display: "Playfair Display", serif;
-  --sans:   "Inter Tight", sans-serif;
-  --mono:   "JetBrains Mono", monospace;
+  --sans: "Inter Tight", sans-serif;
+  --mono: "JetBrains Mono", monospace;
   --radius: 6px;
+  --sidebar: 220px;
 }
-body { font-family: var(--sans); background: var(--negro); color: var(--blanco); min-height: 100vh; -webkit-font-smoothing: antialiased; }
-a { color: inherit; text-decoration: none; }
-button { font: inherit; cursor: pointer; }
-input, select, textarea { font: inherit; }
+body { font-family:var(--sans); background:var(--negro); color:var(--blanco); min-height:100vh; -webkit-font-smoothing:antialiased; }
+a { color:inherit; text-decoration:none; }
+button { font:inherit; cursor:pointer; }
+input, select, textarea { font:inherit; }
 
-/* ── Login ──────────────────────────────────────────────── */
+/* ── Login ── */
 #login-screen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(160deg, var(--azul-noche) 0%, var(--negro) 60%);
-  padding: 24px;
-  position: relative;
-  overflow: hidden;
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg,var(--azul-noche),var(--negro) 60%);
+  padding:24px; position:relative; overflow:hidden;
 }
 #login-screen::before {
-  content: "10";
-  position: absolute;
-  font-family: var(--display);
-  font-weight: 900;
-  font-style: italic;
-  font-size: min(70vw, 700px);
-  color: var(--celeste);
-  opacity: 0.04;
-  right: -8vw;
-  bottom: -12vh;
-  line-height: 0.8;
-  pointer-events: none;
-  user-select: none;
+  content:"10"; position:absolute;
+  font-family:var(--display); font-weight:900; font-style:italic;
+  font-size:min(70vw,700px); color:var(--celeste); opacity:0.04;
+  right:-8vw; bottom:-12vh; line-height:0.8; pointer-events:none;
 }
 .login-card {
-  background: rgba(244,241,234,0.04);
-  border: 1px solid var(--linea-w);
-  padding: 56px 48px;
-  width: 100%;
-  max-width: 420px;
-  backdrop-filter: blur(8px);
+  background:rgba(244,241,234,0.04); border:1px solid var(--linea-w);
+  padding:56px 48px; width:100%; max-width:420px; backdrop-filter:blur(8px);
 }
-.login-logo {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: 28px;
-  letter-spacing: -0.02em;
-  margin-bottom: 6px;
-  white-space: nowrap;
-}
-.login-logo em { font-style: italic; color: var(--oro); margin-left: 4px; }
-.login-sub {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gris);
-  margin-bottom: 40px;
-  display: block;
-}
-.login-card h2 {
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 22px;
-  font-weight: 400;
-  margin-bottom: 28px;
-  color: rgba(244,241,234,0.8);
-}
-.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
-.field label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--gris);
-}
-.field input, .field select, .field textarea {
-  background: rgba(244,241,234,0.06);
-  border: 1px solid var(--linea-w);
-  color: var(--blanco);
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  font-size: 15px;
-  transition: border-color 0.15s;
-  width: 100%;
-}
-.field input:focus, .field select:focus, .field textarea:focus {
-  outline: none;
-  border-color: var(--celeste);
-}
-.field select option { background: var(--negro); color: var(--blanco); }
-.field textarea { min-height: 80px; resize: vertical; }
-.error-msg {
-  background: rgba(220,38,38,0.12);
-  border: 1px solid rgba(220,38,38,0.3);
-  color: #FCA5A5;
-  padding: 10px 14px;
-  border-radius: var(--radius);
-  font-size: 13px;
-  margin-bottom: 16px;
-  display: none;
-}
-.error-msg.show { display: block; }
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 13px 22px;
-  border-radius: 999px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-weight: 600;
-  border: 1px solid transparent;
-  transition: transform 0.12s, background 0.15s, opacity 0.15s;
-  cursor: pointer;
-}
-.btn:hover { transform: translateY(-1px); }
-.btn:disabled { opacity: 0.5; cursor: default; transform: none; }
-.btn-primary { background: var(--oro); color: var(--negro); }
-.btn-primary:hover:not(:disabled) { background: #ffc31f; }
-.btn-ghost { color: var(--blanco); border-color: var(--linea-w); background: transparent; }
-.btn-ghost:hover { background: rgba(244,241,234,0.06); }
-.btn-danger { color: #FCA5A5; border-color: rgba(220,38,38,0.3); background: transparent; }
-.btn-danger:hover { background: rgba(220,38,38,0.1); }
-.btn-sm { padding: 7px 14px; font-size: 10px; }
-.btn-full { width: 100%; }
+.login-logo { font-family:var(--display); font-weight:900; font-size:28px; letter-spacing:-0.02em; margin-bottom:4px; }
+.login-logo em { font-style:italic; color:var(--oro); margin-left:4px; }
+.login-sub { font-family:var(--mono); font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gris); margin-bottom:40px; display:block; }
+.login-card h2 { font-family:var(--display); font-style:italic; font-size:22px; font-weight:400; margin-bottom:28px; color:rgba(244,241,234,0.8); }
 
-/* ── Shell ──────────────────────────────────────────────── */
-#app { display: none; min-height: 100vh; flex-direction: column; }
-#app.show { display: flex; }
-
+/* ── App Shell ── */
+#app { display:none; min-height:100vh; }
+#app.show { display:flex; }
 .topbar {
-  background: var(--azul-noche);
-  border-bottom: 1px solid var(--linea-w);
-  padding: 0 40px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  background:var(--azul-noche); border-bottom:1px solid var(--linea-w);
+  padding:0 28px; height:60px; display:flex; align-items:center;
+  justify-content:space-between; position:fixed; top:0; left:0; right:0; z-index:50;
 }
-.topbar-logo {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: 20px;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
+.topbar-logo { font-family:var(--display); font-weight:900; font-size:18px; letter-spacing:-0.02em; white-space:nowrap; }
+.topbar-logo em { font-style:italic; color:var(--oro); margin-left:4px; }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.topbar-user { font-family:var(--mono); font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gris); }
+/* Sidebar */
+.sidebar {
+  width:var(--sidebar); background:rgba(244,241,234,0.03); border-right:1px solid var(--linea-w);
+  position:fixed; top:60px; left:0; bottom:0; overflow-y:auto; z-index:40;
+  padding:24px 0;
 }
-.topbar-logo em { font-style: italic; color: var(--oro); margin-left: 4px; }
-.topbar-logo span {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gris);
-  margin-left: 12px;
+.sidebar-nav { display:flex; flex-direction:column; gap:2px; }
+.sidebar-item {
+  display:flex; align-items:center; gap:10px;
+  padding:11px 20px; font-size:13px; font-weight:500; color:rgba(244,241,234,0.65);
+  cursor:pointer; transition:background 0.15s, color 0.15s;
+  border-left:2px solid transparent;
 }
-.topbar-right { display: flex; align-items: center; gap: 16px; }
-.topbar-user {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gris);
+.sidebar-item:hover { background:rgba(244,241,234,0.04); color:var(--blanco); }
+.sidebar-item.active { background:rgba(116,172,223,0.1); color:var(--celeste); border-left-color:var(--celeste); }
+.sidebar-item svg { opacity:0.7; flex-shrink:0; }
+.sidebar-item.active svg { opacity:1; }
+.sidebar-badge {
+  background:rgba(239,68,68,0.8); color:#fff; font-family:var(--mono);
+  font-size:9px; padding:2px 6px; border-radius:999px; margin-left:auto;
 }
+/* Main */
+.main { margin-left:var(--sidebar); margin-top:60px; padding:40px 40px 80px; flex:1; }
+.page-head { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:32px; gap:20px; flex-wrap:wrap; }
+.page-eyebrow { font-family:var(--mono); font-size:10px; letter-spacing:0.28em; text-transform:uppercase; color:var(--celeste); display:block; margin-bottom:8px; }
+.page-title { font-family:var(--display); font-weight:900; font-size:clamp(28px,4vw,48px); line-height:0.98; letter-spacing:-0.02em; }
+.page-title em { font-style:italic; color:var(--oro); }
+.stats-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:32px; }
+.stat-card { background:rgba(244,241,234,0.04); border:1px solid var(--linea-w); padding:18px 24px; flex:1; min-width:120px; }
+.stat-card b { font-family:var(--display); font-weight:900; font-size:32px; color:var(--oro); display:block; }
+.stat-card small { font-family:var(--mono); font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gris); }
 
-.main { flex: 1; padding: 48px 40px; max-width: 1300px; width: 100%; margin: 0 auto; }
+/* ── Tabla ── */
+.table-wrap { border:1px solid var(--linea-w); overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+thead { background:rgba(244,241,234,0.04); }
+th { padding:11px 16px; text-align:left; font-family:var(--mono); font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gris); border-bottom:1px solid var(--linea-w); white-space:nowrap; }
+td { padding:13px 16px; border-bottom:1px solid var(--linea-w); font-size:13px; vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(244,241,234,0.02); }
+.td-actions { display:flex; gap:6px; align-items:center; }
+.td-badge { display:inline-block; background:rgba(244,241,234,0.08); border:1px solid var(--linea-w); padding:2px 8px; border-radius:999px; font-family:var(--mono); font-size:9px; letter-spacing:0.08em; white-space:nowrap; }
+.td-badge.jugador { background:rgba(10,42,94,0.5); color:var(--celeste); border-color:rgba(116,172,223,0.3); }
+.td-badge.fan { background:rgba(116,172,223,0.2); color:var(--celeste); border-color:rgba(116,172,223,0.3); }
+.td-badge.retro { background:rgba(246,180,14,0.15); color:var(--oro); border-color:rgba(246,180,14,0.3); }
+.td-badge.paid { background:rgba(34,197,94,0.15); color:#86efac; border-color:rgba(34,197,94,0.3); }
+.td-badge.pending { background:rgba(245,158,11,0.15); color:#fcd34d; border-color:rgba(245,158,11,0.3); }
+.td-badge.new { background:rgba(116,172,223,0.15); color:var(--celeste); border-color:rgba(116,172,223,0.3); }
+.td-price { font-family:var(--display); font-weight:900; font-size:16px; color:var(--oro); white-space:nowrap; }
+.palette-dots { display:flex; gap:4px; }
+.palette-dot { width:14px; height:14px; border-radius:50%; border:1px solid rgba(255,255,255,0.15); }
+.empty-state { text-align:center; padding:60px 20px; color:var(--gris); }
+.empty-state strong { font-family:var(--display); font-style:italic; font-size:22px; color:rgba(244,241,234,0.4); display:block; margin-bottom:8px; }
 
-/* ── Página header ──────────────────────────────────────── */
-.page-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 40px;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.page-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--celeste);
-  display: block;
-  margin-bottom: 8px;
-}
-.page-title {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: clamp(32px, 4vw, 56px);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-}
-.page-title em { font-style: italic; color: var(--oro); font-weight: 400; }
-.stats-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
-.stat-card {
-  background: rgba(244,241,234,0.04);
-  border: 1px solid var(--linea-w);
-  padding: 20px 28px;
-  flex: 1;
-  min-width: 140px;
-}
-.stat-card b {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: 36px;
-  color: var(--oro);
-  display: block;
-}
-.stat-card small {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gris);
-}
+/* ── Botones ── */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 20px; border-radius:999px; font-family:var(--mono); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:600; border:1px solid transparent; transition:transform 0.12s, background 0.15s, opacity 0.15s; cursor:pointer; }
+.btn:hover { transform:translateY(-1px); }
+.btn:disabled { opacity:0.5; cursor:default; transform:none; }
+.btn-primary { background:var(--oro); color:var(--negro); }
+.btn-primary:hover:not(:disabled) { background:#ffc31f; }
+.btn-ghost { color:var(--blanco); border-color:var(--linea-w); background:transparent; }
+.btn-ghost:hover:not(:disabled) { background:rgba(244,241,234,0.06); }
+.btn-danger { color:#fca5a5; border-color:rgba(220,38,38,0.3); background:transparent; }
+.btn-danger:hover:not(:disabled) { background:rgba(220,38,38,0.1); }
+.btn-sm { padding:6px 12px; font-size:9px; }
+.btn-full { width:100%; }
 
-/* ── Tabla de productos ─────────────────────────────────── */
-.table-wrap {
-  border: 1px solid var(--linea-w);
-  overflow-x: auto;
+/* ── Modal ── */
+.modal-scrim { position:fixed; inset:0; background:rgba(6,22,56,0.75); z-index:200; display:none; align-items:flex-start; justify-content:center; padding:40px 20px; overflow-y:auto; backdrop-filter:blur(4px); }
+.modal-scrim.show { display:flex; }
+.modal { background:var(--negro); border:1px solid var(--linea-w); width:100%; max-width:660px; padding:40px; position:relative; animation:slideup 0.2s cubic-bezier(.2,.7,.2,1); }
+@keyframes slideup { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+.modal-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; }
+.modal-head h3 { font-family:var(--display); font-style:italic; font-size:26px; font-weight:400; line-height:1.1; }
+.modal-x { background:none; border:1px solid var(--linea-w); color:var(--blanco); width:30px; height:30px; border-radius:50%; font-size:13px; flex-shrink:0; margin-left:16px; }
+.modal-x:hover { background:rgba(244,241,234,0.08); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-sep { border:none; border-top:1px solid var(--linea-w); margin:20px 0 16px; }
+.field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+.field label { font-family:var(--mono); font-size:9px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gris); }
+.field input, .field select, .field textarea {
+  background:rgba(244,241,234,0.06); border:1px solid var(--linea-w); color:var(--blanco);
+  padding:11px 13px; border-radius:var(--radius); font-size:14px; transition:border-color 0.15s; width:100%;
 }
-table { width: 100%; border-collapse: collapse; }
-thead { background: rgba(244,241,234,0.04); }
-th {
-  padding: 12px 18px;
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gris);
-  border-bottom: 1px solid var(--linea-w);
-  white-space: nowrap;
-}
-td {
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--linea-w);
-  font-size: 14px;
-  vertical-align: middle;
-}
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(244,241,234,0.025); }
-.td-name { font-weight: 600; }
-.td-price { font-family: var(--display); font-weight: 900; font-size: 16px; color: var(--oro); white-space: nowrap; }
-.td-badge {
-  display: inline-block;
-  background: rgba(244,241,234,0.08);
-  border: 1px solid var(--linea-w);
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
-}
-.td-actions { display: flex; gap: 8px; align-items: center; }
-.palette-dots { display: flex; gap: 4px; align-items: center; }
-.palette-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
-.empty-state {
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--gris);
-}
-.empty-state strong {
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 24px;
-  color: rgba(244,241,234,0.5);
-  display: block;
-  margin-bottom: 8px;
-}
-.empty-state span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
+.field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--celeste); }
+.field select option { background:var(--negro); }
+.field textarea { min-height:80px; resize:vertical; }
+.field-note { font-family:var(--mono); font-size:9px; letter-spacing:0.1em; color:var(--gris); margin-top:3px; }
+.palette-preview { display:flex; gap:8px; align-items:center; margin-top:8px; }
+.palette-prev-dot { width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,0.2); }
+.upload-area { border:1px dashed rgba(116,172,223,0.35); padding:18px; text-align:center; cursor:pointer; transition:border-color 0.15s, background 0.15s; border-radius:var(--radius); position:relative; }
+.upload-area:hover { border-color:var(--celeste); background:rgba(116,172,223,0.04); }
+.upload-area input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.upload-area p { font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gris); }
+.upload-area strong { font-size:12px; color:var(--celeste); display:block; margin-bottom:4px; }
+.upload-preview { max-height:100px; max-width:100%; margin:8px auto 0; display:block; }
+.modal-foot { display:flex; justify-content:flex-end; gap:10px; margin-top:28px; }
+.error-msg { background:rgba(220,38,38,0.1); border:1px solid rgba(220,38,38,0.3); color:#fca5a5; padding:10px 14px; border-radius:var(--radius); font-size:12px; margin-bottom:14px; display:none; }
+.error-msg.show { display:block; }
 
-/* ── Modal ──────────────────────────────────────────────── */
-.modal-scrim {
-  position: fixed; inset: 0;
-  background: rgba(6,22,56,0.75);
-  z-index: 200;
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 40px 20px;
-  overflow-y: auto;
-  backdrop-filter: blur(4px);
-}
-.modal-scrim.show { display: flex; }
-.modal {
-  background: var(--negro);
-  border: 1px solid var(--linea-w);
-  width: 100%;
-  max-width: 640px;
-  padding: 40px;
-  position: relative;
-  animation: slideup 0.2s cubic-bezier(.2,.7,.2,1);
-}
-@keyframes slideup { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.modal-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-}
-.modal-head h3 {
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1.1;
-}
-.modal-x {
-  background: none;
-  border: 1px solid var(--linea-w);
-  color: var(--blanco);
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  font-size: 14px;
-  flex-shrink: 0;
-  margin-left: 16px;
-}
-.modal-x:hover { background: rgba(244,241,234,0.08); }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.form-sep {
-  border: none;
-  border-top: 1px solid var(--linea-w);
-  margin: 24px 0 18px;
-}
-.field-note {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--gris);
-  margin-top: 4px;
-}
-.palette-preview {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-top: 8px;
-}
-.palette-preview-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); }
-.upload-area {
-  border: 1px dashed rgba(116,172,223,0.4);
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  border-radius: var(--radius);
-  position: relative;
-}
-.upload-area:hover { border-color: var(--celeste); background: rgba(116,172,223,0.04); }
-.upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-.upload-area p { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
-.upload-area strong { font-size: 13px; color: var(--celeste); display: block; margin-bottom: 4px; }
-.upload-preview { max-height: 120px; max-width: 100%; margin: 8px auto 0; display: block; }
-.modal-foot { display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; }
+/* ── Toast ── */
+#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--azul-noche); border:1px solid var(--linea-w); color:var(--blanco); padding:10px 22px; font-family:var(--mono); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; z-index:999; opacity:0; transition:opacity 0.2s, transform 0.2s; pointer-events:none; white-space:nowrap; }
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+#toast.success { border-color:rgba(52,199,89,0.4); color:#86efac; }
+#toast.error { border-color:rgba(220,38,38,0.4); color:#fca5a5; }
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(244,241,234,0.15); border-top-color:var(--oro); border-radius:50%; animation:spin 0.7s linear infinite; vertical-align:middle; }
+@keyframes spin { to { transform:rotate(360deg); } }
 
-/* ── Confirm modal ──────────────────────────────────────── */
-#confirm-modal .modal { max-width: 400px; }
-#confirm-modal h3 { font-family: var(--display); font-style: italic; font-size: 22px; font-weight: 400; margin-bottom: 12px; }
-#confirm-modal p { color: rgba(244,241,234,0.7); font-size: 14px; line-height: 1.5; }
-#confirm-modal .modal-foot { margin-top: 24px; }
-
-/* ── Password modal ─────────────────────────────────────── */
-#password-modal .modal { max-width: 420px; }
-
-/* ── Toast ──────────────────────────────────────────────── */
-#toast {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--azul-noche);
-  border: 1px solid var(--linea-w);
-  color: var(--blanco);
-  padding: 12px 24px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  z-index: 999;
-  opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
-  pointer-events: none;
-  white-space: nowrap;
+/* Sizes checkboxes */
+.sizes-grid { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+.size-chk { display:none; }
+.size-lbl {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:38px; border:1px solid var(--linea-w); border-radius:6px;
+  font-family:var(--mono); font-size:11px; cursor:pointer; transition:all 0.15s; color:var(--blanco);
 }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-#toast.success { border-color: rgba(52,199,89,0.4); color: #86EFAC; }
-#toast.error { border-color: rgba(220,38,38,0.4); color: #FCA5A5; }
+.size-chk:checked + .size-lbl { background:var(--celeste); color:var(--negro); border-color:var(--celeste); }
 
-/* ── Loading spinner ────────────────────────────────────── */
-.spinner {
-  display: inline-block;
-  width: 16px; height: 16px;
-  border: 2px solid rgba(244,241,234,0.2);
-  border-top-color: var(--oro);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+/* ── Order detail ── */
+.order-detail { padding:20px 0; }
+.order-detail h4 { font-family:var(--mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--gris); margin-bottom:12px; }
+.order-items { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.order-item { display:flex; justify-content:space-between; font-size:13px; padding:8px 0; border-bottom:1px solid var(--linea-w); }
+.order-item:last-child { border-bottom:none; }
+.order-totals { margin-top:12px; }
+.ot-row { display:flex; justify-content:space-between; font-size:13px; color:var(--gris); padding:4px 0; }
+.ot-row b { color:var(--blanco); font-family:var(--display); }
+.ot-total b { font-size:20px; color:var(--oro); }
 
-/* ── Responsive ─────────────────────────────────────────── */
-@media (max-width: 700px) {
-  .topbar { padding: 0 20px; }
-  .main { padding: 28px 20px; }
-  .form-row { grid-template-columns: 1fr; }
-  .modal { padding: 28px 20px; }
-  .page-head { flex-direction: column; align-items: flex-start; }
+/* ── FAQ editor ── */
+.faq-list { display:flex; flex-direction:column; gap:0; }
+.faq-row { display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid var(--linea-w); }
+.faq-row:last-child { border-bottom:none; }
+.faq-sort { display:flex; flex-direction:column; gap:2px; }
+.faq-sort button { background:none; border:1px solid var(--linea-w); color:var(--gris); width:22px; height:22px; font-size:10px; border-radius:4px; }
+.faq-sort button:hover { color:var(--blanco); border-color:var(--blanco); }
+.faq-q-text { font-weight:600; font-size:13px; line-height:1.4; }
+.faq-cat-tag { font-family:var(--mono); font-size:9px; letter-spacing:0.1em; color:var(--celeste); margin-top:2px; }
+
+/* ── Config ── */
+.config-section { margin-bottom:32px; }
+.config-section h3 { font-family:var(--mono); font-size:10px; letter-spacing:0.28em; text-transform:uppercase; color:var(--celeste); margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid var(--linea-w); }
+
+/* ── Contact ── */
+.contact-row { display:grid; grid-template-columns:1fr 3fr; gap:20px; align-items:start; padding:16px 0; border-bottom:1px solid var(--linea-w); }
+.contact-row:last-child { border-bottom:none; }
+.contact-from { }
+.contact-from b { font-size:13px; font-weight:700; display:block; margin-bottom:2px; }
+.contact-from small { font-family:var(--mono); font-size:10px; color:var(--gris); }
+.contact-from .unread-dot { display:inline-block; width:7px; height:7px; background:var(--celeste); border-radius:50%; margin-right:6px; }
+.contact-msg { font-size:13px; color:rgba(244,241,234,0.8); line-height:1.55; }
+.contact-meta { font-family:var(--mono); font-size:10px; color:var(--gris); margin-top:4px; }
+
+/* Responsive */
+@media (max-width:900px) {
+  .sidebar { display:none; }
+  .main { margin-left:0; padding:24px 16px 60px; }
+  .form-row { grid-template-columns:1fr; }
+  .stats-row { gap:10px; }
 }
 </style>
 </head>
@@ -452,181 +228,270 @@ tr:hover td { background: rgba(244,241,234,0.025); }
     <span class="login-sub">Panel de administración</span>
     <h2>Accedé con tu cuenta.</h2>
     <div class="error-msg" id="login-error"></div>
-    <div class="field">
-      <label>Usuario</label>
-      <input type="text" id="login-user" placeholder="admin" autocomplete="username" />
-    </div>
-    <div class="field">
-      <label>Contraseña</label>
-      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" />
-    </div>
-    <button class="btn btn-primary btn-full" id="login-btn">Entrar →</button>
+    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="admin" autocomplete="username" /></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" /></div>
+    <button class="btn btn-primary btn-full" id="login-btn" style="margin-top:8px">Entrar →</button>
   </div>
 </div>
 
-<!-- APP SHELL -->
+<!-- APP -->
 <div id="app">
   <header class="topbar">
-    <div style="display:flex;align-items:center;gap:0">
+    <div style="display:flex;align-items:center;gap:12px">
       <span class="topbar-logo">EL DIEZ <em>BAIRES</em></span>
-      <span class="topbar-logo" style="font-size:11px;font-family:var(--mono);letter-spacing:0.22em;color:var(--gris);font-weight:400;margin-left:14px">ADMIN</span>
+      <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.3em;color:var(--gris);text-transform:uppercase">ADMIN</span>
     </div>
     <div class="topbar-right">
       <span class="topbar-user" id="topbar-username"></span>
-      <button class="btn btn-ghost btn-sm" id="change-pass-btn">Cambiar contraseña</button>
+      <button class="btn btn-ghost btn-sm" id="change-pass-btn">Contraseña</button>
       <button class="btn btn-ghost btn-sm" id="logout-btn">Salir</button>
     </div>
   </header>
 
-  <main class="main">
-    <div class="page-head">
-      <div>
-        <span class="page-eyebrow">— Catálogo</span>
-        <h1 class="page-title">Tus <em>camisetas.</em></h1>
+  <nav class="sidebar">
+    <div class="sidebar-nav">
+      <div class="sidebar-item active" onclick="showTab('catalogo')" id="tab-catalogo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Catálogo
       </div>
-      <button class="btn btn-primary" id="add-btn">+ Agregar camiseta</button>
+      <div class="sidebar-item" onclick="showTab('pedidos')" id="tab-pedidos">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Pedidos
+        <span class="sidebar-badge" id="badge-pedidos" style="display:none">0</span>
+      </div>
+      <div class="sidebar-item" onclick="showTab('faqs')" id="tab-faqs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Preguntas
+      </div>
+      <div class="sidebar-item" onclick="showTab('contactos')" id="tab-contactos">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Contactos
+        <span class="sidebar-badge" id="badge-contactos" style="display:none">0</span>
+      </div>
+      <div class="sidebar-item" onclick="showTab('config')" id="tab-config">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Configuración
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ── CATÁLOGO ── -->
+    <div id="page-catalogo">
+      <div class="page-head">
+        <div><span class="page-eyebrow">— Catálogo</span><h1 class="page-title">Tus <em>camisetas.</em></h1></div>
+        <button class="btn btn-primary" id="add-btn">+ Agregar camiseta</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><b id="stat-total">0</b><small>camisetas activas</small></div>
+        <div class="stat-card"><b id="stat-jugador">0</b><small>jugador</small></div>
+        <div class="stat-card"><b id="stat-fan">0</b><small>fan</small></div>
+        <div class="stat-card"><b id="stat-retro">0</b><small>retro / vintage</small></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Camiseta</th><th>Liga</th><th>Equipo</th><th>Tipo</th><th>Año</th><th>Precio</th><th>Talles</th><th>Paleta</th><th></th></tr></thead>
+          <tbody id="products-tbody"><tr><td colspan="9"><div class="empty-state"><span class="spinner"></span></div></td></tr></tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card"><b id="stat-total">0</b><small>camisetas cargadas</small></div>
-      <div class="stat-card"><b id="stat-retro">0</b><small>retro / vintage</small></div>
-      <div class="stat-card"><b id="stat-actual">0</b><small>actuales</small></div>
-      <div class="stat-card"><b id="stat-paises">0</b><small>países</small></div>
+    <!-- ── PEDIDOS ── -->
+    <div id="page-pedidos" style="display:none">
+      <div class="page-head">
+        <div><span class="page-eyebrow">— Pedidos</span><h1 class="page-title">Pedidos <em>recibidos.</em></h1></div>
+        <button class="btn btn-ghost btn-sm" onclick="loadOrders()">↺ Actualizar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>ID</th><th>Cliente</th><th>Total</th><th>Pago</th><th>Estado</th><th>Fecha</th><th></th></tr></thead>
+          <tbody id="orders-tbody"><tr><td colspan="8"><div class="empty-state"><strong>Sin pedidos</strong><span>Los pedidos de la tienda aparecerán acá.</span></div></td></tr></tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Camiseta</th>
-            <th>País</th>
-            <th>Tipo</th>
-            <th>Época</th>
-            <th>Año</th>
-            <th>Precio</th>
-            <th>Paleta</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="products-tbody">
-          <tr><td colspan="8"><div class="empty-state"><span class="spinner"></span></div></td></tr>
-        </tbody>
-      </table>
+    <!-- ── FAQS ── -->
+    <div id="page-faqs" style="display:none">
+      <div class="page-head">
+        <div><span class="page-eyebrow">— FAQ</span><h1 class="page-title">Preguntas <em>frecuentes.</em></h1></div>
+        <button class="btn btn-primary" onclick="openFaqModal()">+ Agregar pregunta</button>
+      </div>
+      <div class="table-wrap" id="faqs-wrap">
+        <div class="empty-state"><span class="spinner"></span></div>
+      </div>
     </div>
+
+    <!-- ── CONTACTOS ── -->
+    <div id="page-contactos" style="display:none">
+      <div class="page-head">
+        <div><span class="page-eyebrow">— Contactos</span><h1 class="page-title">Mensajes <em>recibidos.</em></h1></div>
+        <button class="btn btn-ghost btn-sm" onclick="loadContacts()">↺ Actualizar</button>
+      </div>
+      <div id="contacts-list"><div class="empty-state"><span class="spinner"></span></div></div>
+    </div>
+
+    <!-- ── CONFIGURACIÓN ── -->
+    <div id="page-config" style="display:none">
+      <div class="page-head">
+        <div><span class="page-eyebrow">— Configuración</span><h1 class="page-title">Ajustes <em>de la tienda.</em></h1></div>
+      </div>
+      <div style="max-width:700px">
+        <div class="config-section">
+          <h3>Datos bancarios (para transferencia)</h3>
+          <div class="form-row">
+            <div class="field"><label>Banco</label><input type="text" id="cfg-bank_name" /></div>
+            <div class="field"><label>Titular</label><input type="text" id="cfg-bank_owner" /></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>CBU</label><input type="text" id="cfg-bank_cbu" /></div>
+            <div class="field"><label>Alias</label><input type="text" id="cfg-bank_alias" /></div>
+          </div>
+          <div class="field"><label>Número de cuenta</label><input type="text" id="cfg-bank_account" /></div>
+        </div>
+        <div class="config-section">
+          <h3>Mercado Pago</h3>
+          <div class="field"><label>Access Token (privado — no compartas)</label><input type="password" id="cfg-mp_access_token" placeholder="APP_USR-..." /></div>
+          <div class="field"><label>Public Key</label><input type="text" id="cfg-mp_public_key" placeholder="APP_USR-..." /></div>
+          <div class="field"><label>Cuotas sin interés (separadas por coma)</label><input type="text" id="cfg-installments" placeholder="3,6,12" /></div>
+        </div>
+        <div class="config-section">
+          <h3>Envíos</h3>
+          <div class="form-row">
+            <div class="field"><label>Costo de envío (ARS)</label><input type="number" id="cfg-shipping_price" min="0" /></div>
+            <div class="field"><label>Monto para envío gratis (ARS)</label><input type="number" id="cfg-free_shipping_threshold" min="0" /></div>
+          </div>
+        </div>
+        <div class="config-section">
+          <h3>Contacto y redes</h3>
+          <div class="form-row">
+            <div class="field"><label>Email</label><input type="email" id="cfg-store_email" /></div>
+            <div class="field"><label>Teléfono / WhatsApp</label><input type="text" id="cfg-store_whatsapp" /></div>
+          </div>
+          <div class="field"><label>Instagram</label><input type="text" id="cfg-store_instagram" placeholder="@eldiezbaires" /></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveConfig()">Guardar configuración →</button>
+      </div>
+    </div>
+
   </main>
 </div>
 
-<!-- MODAL ADD/EDIT -->
+<!-- MODAL PRODUCTO -->
 <div class="modal-scrim" id="product-modal">
-  <div class="modal">
+  <div class="modal" style="max-width:700px">
     <div class="modal-head">
       <h3 id="modal-title">Nueva camiseta</h3>
       <button class="modal-x" id="modal-close-btn">✕</button>
     </div>
-
     <div class="error-msg" id="modal-error"></div>
 
-    <div class="form-row">
-      <div class="field" style="grid-column:1/-1">
-        <label>Nombre <span style="color:#F87171">*</span></label>
-        <input type="text" id="f-name" placeholder="Argentina · Mundial '86" />
-      </div>
+    <div class="field" style="grid-column:1/-1">
+      <label>Nombre <span style="color:#F87171">*</span></label>
+      <input type="text" id="f-name" placeholder="Real Madrid · 2023 Local" />
     </div>
     <div class="field">
       <label>Subtítulo</label>
-      <input type="text" id="f-subtitle" placeholder="Albiceleste · Local" />
+      <input type="text" id="f-subtitle" placeholder="Camisileta de local · Temp. 2023/24" />
     </div>
+
     <div class="form-row">
       <div class="field">
-        <label>País <span style="color:#F87171">*</span></label>
-        <select id="f-country">
+        <label>Liga <span style="color:#F87171">*</span></label>
+        <select id="f-liga" onchange="updateEquiposSelect()">
           <option value="">— Seleccioná —</option>
-          <option>Argentina</option>
-          <option>Italia</option>
-          <option>España</option>
-          <option>Inglaterra</option>
-          <option>Brasil</option>
-          <option>Francia</option>
-          <option>Alemania</option>
-          <option>Uruguay</option>
-          <option>Otro</option>
         </select>
       </div>
+      <div class="field">
+        <label>Equipo <span style="color:#F87171">*</span></label>
+        <select id="f-equipo">
+          <option value="">— Primero elegí liga —</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
       <div class="field">
         <label>Tipo <span style="color:#F87171">*</span></label>
-        <select id="f-type">
+        <select id="f-jersey_type" onchange="setAutoPrice()">
           <option value="">— Seleccioná —</option>
-          <option>Selección</option>
-          <option>Club</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="field">
-        <label>Época <span style="color:#F87171">*</span></label>
-        <select id="f-era">
-          <option value="">— Seleccioná —</option>
-          <option>Retro</option>
-          <option>Actual</option>
+          <option value="jugador">Jugador ($50.000)</option>
+          <option value="fan">Fan ($40.000)</option>
+          <option value="retro">Retro ($45.000)</option>
         </select>
       </div>
       <div class="field">
-        <label>Versión <span style="color:#F87171">*</span></label>
+        <label>Versión</label>
         <select id="f-version">
-          <option value="">— Seleccioná —</option>
-          <option>Local</option>
-          <option>Visitante</option>
-          <option>Tercera</option>
+          <option value="Local">Local</option>
+          <option value="Visitante">Visitante</option>
+          <option value="Tercera">Tercera</option>
         </select>
       </div>
     </div>
     <div class="form-row">
       <div class="field">
         <label>Año <span style="color:#F87171">*</span></label>
-        <input type="number" id="f-year" placeholder="1986" min="1900" max="2099" />
+        <input type="number" id="f-year" placeholder="2023" min="1900" max="2099" />
       </div>
       <div class="field">
         <label>Precio (ARS) <span style="color:#F87171">*</span></label>
-        <input type="number" id="f-price" placeholder="89000" min="0" step="500" />
+        <input type="number" id="f-price" placeholder="50000" min="0" step="500" />
       </div>
     </div>
+
+    <div class="field">
+      <label>Talles disponibles</label>
+      <div class="sizes-grid" id="sizes-grid">
+        <!-- se genera dinámicamente -->
+      </div>
+    </div>
+
     <div class="field">
       <label>Badge / etiqueta especial</label>
-      <input type="text" id="f-badge" placeholder="El Diez, ★★★, Scudetto…" />
-      <span class="field-note">Aparece encima de la camiseta en la tarjeta. Opcional.</span>
+      <input type="text" id="f-badge" placeholder="★ Edición limitada, ETERNO…" />
     </div>
     <div class="field">
       <label>Descripción</label>
-      <textarea id="f-desc" placeholder="Réplica del clásico bastón celeste y blanco…"></textarea>
+      <textarea id="f-desc" placeholder="Descripción del producto…" rows="3"></textarea>
+    </div>
+    <div style="display:flex;gap:20px;margin-bottom:14px;align-items:center">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+        <input type="checkbox" id="f-customizable" checked style="accent-color:var(--celeste);width:16px;height:16px" />
+        Permite personalización (nombre+número, parches)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+        <input type="checkbox" id="f-active" checked style="accent-color:var(--celeste);width:16px;height:16px" />
+        Activo (visible en tienda)
+      </label>
     </div>
 
     <hr class="form-sep" />
     <div class="form-row">
       <div class="field">
-        <label>Color primario <span style="color:#F87171">*</span></label>
-        <input type="color" id="f-color1" value="#FFFFFF" style="height:42px;padding:4px 8px;" />
+        <label>Color primario</label>
+        <input type="color" id="f-color1" value="#FFFFFF" style="height:42px;padding:4px 8px" />
       </div>
       <div class="field">
-        <label>Color secundario <span style="color:#F87171">*</span></label>
-        <input type="color" id="f-color2" value="#74ACDF" style="height:42px;padding:4px 8px;" />
+        <label>Color secundario</label>
+        <input type="color" id="f-color2" value="#74ACDF" style="height:42px;padding:4px 8px" />
       </div>
     </div>
     <div class="palette-preview">
-      <div class="palette-preview-dot" id="prev-color1"></div>
-      <div class="palette-preview-dot" id="prev-color2"></div>
-      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.2em;color:var(--gris);text-transform:uppercase;margin-left:4px">Vista previa paleta</span>
+      <div class="palette-prev-dot" id="prev-c1"></div>
+      <div class="palette-prev-dot" id="prev-c2"></div>
+      <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.2em;color:var(--gris);text-transform:uppercase;margin-left:4px">Vista previa</span>
     </div>
 
     <hr class="form-sep" />
     <div class="field">
       <label>Imagen de la camiseta</label>
-      <div class="upload-area" id="upload-area">
+      <div class="upload-area">
         <input type="file" id="f-image" accept="image/*" />
         <strong id="upload-label">Subir imagen</strong>
         <p>JPG, PNG, WEBP — máx. 8 MB</p>
         <img id="upload-preview" class="upload-preview" style="display:none" alt="" />
       </div>
-      <span class="field-note" id="upload-note">Si no subís imagen se muestra la silueta SVG.</span>
+      <span class="field-note" id="upload-note">Si no subís imagen se muestra la silueta SVG generada automáticamente.</span>
     </div>
 
     <div class="modal-foot">
@@ -636,12 +501,61 @@ tr:hover td { background: rgba(244,241,234,0.025); }
   </div>
 </div>
 
+<!-- MODAL PEDIDO DETALLE -->
+<div class="modal-scrim" id="order-modal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head">
+      <h3>Detalle del pedido</h3>
+      <button class="modal-x" onclick="closeOrderModal()">✕</button>
+    </div>
+    <div id="order-detail-content"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOrderModal()">Cerrar</button>
+      <button class="btn btn-primary" id="order-save-btn" onclick="saveOrderStatus()">Guardar estado →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FAQ -->
+<div class="modal-scrim" id="faq-modal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-head">
+      <h3 id="faq-modal-title">Nueva pregunta</h3>
+      <button class="modal-x" onclick="closeFaqModal()">✕</button>
+    </div>
+    <div class="error-msg" id="faq-error"></div>
+    <div class="field"><label>Pregunta <span style="color:#F87171">*</span></label><input type="text" id="faq-q" placeholder="¿Hacen envíos al interior?" /></div>
+    <div class="field"><label>Respuesta <span style="color:#F87171">*</span></label><textarea id="faq-a" rows="4" placeholder="Sí, enviamos a todo el país…"></textarea></div>
+    <div class="form-row">
+      <div class="field">
+        <label>Categoría</label>
+        <select id="faq-cat">
+          <option>General</option><option>Pagos</option><option>Envíos</option>
+          <option>Producto</option><option>Devoluciones</option><option>Pedidos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Orden</label>
+        <input type="number" id="faq-order" value="0" min="0" />
+      </div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;margin-bottom:8px">
+      <input type="checkbox" id="faq-active" checked style="accent-color:var(--celeste);width:16px;height:16px" />
+      Activa (visible en la web)
+    </label>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeFaqModal()">Cancelar</button>
+      <button class="btn btn-primary" id="faq-save-btn">Guardar →</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL CONFIRMAR BORRAR -->
 <div class="modal-scrim" id="confirm-modal">
-  <div class="modal">
-    <h3>¿Eliminás esta camiseta?</h3>
-    <p id="confirm-product-name" style="margin-top:8px;color:var(--gris)"></p>
-    <p style="margin-top:12px">Esta acción no se puede deshacer.</p>
+  <div class="modal" style="max-width:400px">
+    <h3 id="confirm-title" style="font-family:var(--display);font-style:italic;font-size:22px;font-weight:400;margin-bottom:10px">¿Confirmás?</h3>
+    <p id="confirm-text" style="color:rgba(244,241,234,0.7);font-size:14px;line-height:1.5;margin-bottom:4px"></p>
+    <p style="color:rgba(244,241,234,0.5);font-size:13px">Esta acción no se puede deshacer.</p>
     <div class="modal-foot">
       <button class="btn btn-ghost" id="confirm-cancel-btn">No, volver</button>
       <button class="btn btn-danger" id="confirm-ok-btn">Sí, eliminar</button>
@@ -651,426 +565,583 @@ tr:hover td { background: rgba(244,241,234,0.025); }
 
 <!-- MODAL CAMBIAR CONTRASEÑA -->
 <div class="modal-scrim" id="password-modal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3>Cambiar contraseña</h3>
-      <button class="modal-x" id="pass-modal-close">✕</button>
-    </div>
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3>Cambiar contraseña</h3><button class="modal-x" onclick="$('#password-modal').classList.remove('show')">✕</button></div>
     <div class="error-msg" id="pass-error"></div>
-    <div class="field">
-      <label>Contraseña actual</label>
-      <input type="password" id="pass-current" />
-    </div>
-    <div class="field">
-      <label>Nueva contraseña</label>
-      <input type="password" id="pass-new" />
-    </div>
-    <div class="field">
-      <label>Confirmar nueva contraseña</label>
-      <input type="password" id="pass-confirm" />
-    </div>
+    <div class="field"><label>Contraseña actual</label><input type="password" id="pass-current" /></div>
+    <div class="field"><label>Nueva contraseña</label><input type="password" id="pass-new" /></div>
+    <div class="field"><label>Confirmar nueva</label><input type="password" id="pass-confirm" /></div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" id="pass-cancel-btn">Cancelar</button>
-      <button class="btn btn-primary" id="pass-save-btn">Cambiar contraseña →</button>
+      <button class="btn btn-ghost" onclick="$('#password-modal').classList.remove('show')">Cancelar</button>
+      <button class="btn btn-primary" id="pass-save-btn">Cambiar →</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-// ── Utilidades ─────────────────────────────────────────────────────────────
-const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+const LIGAS = {
+  "Premier League":     ["Arsenal","Chelsea","Liverpool","Manchester City","Manchester United","Tottenham","Otros"],
+  "La Liga":            ["Atlético de Madrid","Barcelona","Real Madrid","Sevilla","Valencia","Otros"],
+  "Serie A":            ["AC Milan","Inter","Juventus","Napoli","Roma","Otros"],
+  "Bundesliga":         ["Bayer Leverkusen","Bayern Munich","Borussia Dortmund","Otros"],
+  "Ligue 1":            ["Lyon","Marseille","Mónaco","PSG","Otros"],
+  "Equipos Argentinos": ["Boca Juniors","Estudiantes","Independiente","Racing","River Plate","San Lorenzo","Otros"],
+  "Brasileirao":        ["Corinthians","Flamengo","Palmeiras","Santos","Vasco","Otros"],
+  "Selecciones":        ["Alemania","Argentina","Brasil","España","Francia","Inglaterra","Italia","Portugal","Uruguay","Otras"],
+};
+const ALL_SIZES = ["S","M","L","XL","2XL","3XL","4XL"];
+const JERSEY_PRICES = { jugador:50000, fan:40000, retro:45000 };
 
-let TOKEN = localStorage.getItem('eldiez_token') || '';
-let currentProducts = [];
-let editingId = null;
-let deletingId = null;
-let pendingImageFile = null;
+const $ = (sel, ctx=document) => ctx.querySelector(sel);
 
-function formatPrice(n) {
-  return '$' + Number(n).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+let TOKEN = localStorage.getItem("eldiez_token") || "";
+let currentProducts = [], editingId = null, deletingId = null, pendingImageFile = null;
+let editingFaqId = null, deletingFaqId = null, deletingContactId = null;
+let editingOrderId = null;
+
+function fmt(n) { return "$ " + Number(n).toLocaleString("es-AR",{maximumFractionDigits:0}); }
+function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}) : "—"; }
+
+function toast(msg, type="success") {
+  const el = $("#toast"); el.textContent=msg; el.className="show "+type;
+  clearTimeout(el._t); el._t=setTimeout(()=>el.className="", 3000);
 }
+function showErr(id, msg) { const el=$("#"+id); el.textContent=msg; el.classList.add("show"); }
+function hideErr(id) { const el=$("#"+id); el.textContent=""; el.classList.remove("show"); }
 
-function toast(msg, type = 'success') {
-  const el = $('#toast');
-  el.textContent = msg;
-  el.className = 'show ' + type;
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.className = '', 2800);
-}
-
-function showError(elId, msg) {
-  const el = $('#' + elId);
-  el.textContent = msg;
-  el.classList.add('show');
-}
-function clearError(elId) {
-  const el = $('#' + elId);
-  el.textContent = '';
-  el.classList.remove('show');
-}
-
-// ── API ────────────────────────────────────────────────────────────────────
 async function api(method, path, body) {
-  const opts = {
-    method,
-    headers: { 'Content-Type': 'application/json', ...(TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {}) },
-  };
-  if (body !== undefined) opts.body = JSON.stringify(body);
+  const opts = { method, headers: {"Content-Type":"application/json", ...(TOKEN?{Authorization:"Bearer "+TOKEN}:{})} };
+  if (body!==undefined) opts.body=JSON.stringify(body);
   const res = await fetch(path, opts);
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'Error del servidor');
+  const data = await res.json().catch(()=>({}));
+  if (!res.ok) throw new Error(data.error||"Error del servidor");
   return data;
 }
-
 async function uploadImage(file) {
-  const fd = new FormData();
-  fd.append('image', file);
-  const res = await fetch('/api/upload', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN }, body: fd });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Error al subir imagen');
+  const fd=new FormData(); fd.append("image",file);
+  const res=await fetch("/api/upload",{method:"POST",headers:{Authorization:"Bearer "+TOKEN},body:fd});
+  const data=await res.json();
+  if (!res.ok) throw new Error(data.error||"Error al subir imagen");
   return data.url;
 }
 
-// ── Auth ───────────────────────────────────────────────────────────────────
+// ── Auth ─────────────────────────────────────────────────────────────────────
 async function checkAuth() {
   if (!TOKEN) return showLogin();
-  try {
-    await api('GET', '/api/products');
-    showApp();
-  } catch {
-    TOKEN = '';
-    localStorage.removeItem('eldiez_token');
-    showLogin();
-  }
+  try { await api("GET","/api/products"); showApp(); } catch { TOKEN=""; localStorage.removeItem("eldiez_token"); showLogin(); }
 }
-
-function showLogin() {
-  $('#login-screen').style.display = 'flex';
-  $('#app').classList.remove('show');
-}
-
+function showLogin() { $("#login-screen").style.display="flex"; $("#app").classList.remove("show"); }
 function showApp() {
-  $('#login-screen').style.display = 'none';
-  $('#app').classList.add('show');
-  const payload = TOKEN ? JSON.parse(atob(TOKEN.split('.')[1])) : {};
-  $('#topbar-username').textContent = payload.username || 'admin';
+  $("#login-screen").style.display="none"; $("#app").classList.add("show");
+  try { const p=JSON.parse(atob(TOKEN.split(".")[1])); $("#topbar-username").textContent=p.username||"admin"; } catch {}
   loadProducts();
+  loadBadges();
 }
 
-$('#login-btn').addEventListener('click', async () => {
-  clearError('login-error');
-  const username = $('#login-user').value.trim();
-  const password = $('#login-pass').value;
-  if (!username || !password) return showError('login-error', 'Completá usuario y contraseña.');
-  $('#login-btn').disabled = true;
-  $('#login-btn').innerHTML = '<span class="spinner"></span> Entrando…';
+$("#login-btn").onclick = async () => {
+  hideErr("login-error");
+  const u=$("#login-user").value.trim(), p=$("#login-pass").value;
+  if (!u||!p) return showErr("login-error","Completá usuario y contraseña.");
+  $("#login-btn").disabled=true; $("#login-btn").innerHTML='<span class="spinner"></span> Entrando…';
   try {
-    const data = await api('POST', '/api/auth/login', { username, password });
-    TOKEN = data.token;
-    localStorage.setItem('eldiez_token', TOKEN);
-    showApp();
-  } catch (e) {
-    showError('login-error', e.message);
-  } finally {
-    $('#login-btn').disabled = false;
-    $('#login-btn').textContent = 'Entrar →';
-  }
-});
+    const data=await api("POST","/api/auth/login",{username:u,password:p});
+    TOKEN=data.token; localStorage.setItem("eldiez_token",TOKEN); showApp();
+  } catch(e) { showErr("login-error",e.message); }
+  finally { $("#login-btn").disabled=false; $("#login-btn").textContent="Entrar →"; }
+};
+$("#login-pass").onkeydown = e => { if(e.key==="Enter") $("#login-btn").click(); };
+$("#logout-btn").onclick = () => { TOKEN=""; localStorage.removeItem("eldiez_token"); showLogin(); };
 
-$('#login-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#login-btn').click(); });
-
-$('#logout-btn').addEventListener('click', () => {
-  TOKEN = '';
-  localStorage.removeItem('eldiez_token');
-  showLogin();
-});
-
-// ── Cambiar contraseña ────────────────────────────────────────────────────
-$('#change-pass-btn').addEventListener('click', () => {
-  clearError('pass-error');
-  $('#pass-current').value = '';
-  $('#pass-new').value = '';
-  $('#pass-confirm').value = '';
-  $('#password-modal').classList.add('show');
-});
-$('#pass-modal-close, #pass-cancel-btn').forEach
-  ? $$('#pass-modal-close, #pass-cancel-btn').forEach(b => b.addEventListener('click', () => $('#password-modal').classList.remove('show')))
-  : null;
-['#pass-modal-close', '#pass-cancel-btn'].forEach(sel => {
-  $(sel)?.addEventListener('click', () => $('#password-modal').classList.remove('show'));
-});
-$('#pass-save-btn').addEventListener('click', async () => {
-  clearError('pass-error');
-  const curr = $('#pass-current').value;
-  const next = $('#pass-new').value;
-  const conf = $('#pass-confirm').value;
-  if (!curr || !next || !conf) return showError('pass-error', 'Completá todos los campos.');
-  if (next !== conf) return showError('pass-error', 'Las contraseñas nuevas no coinciden.');
-  if (next.length < 6) return showError('pass-error', 'La contraseña debe tener al menos 6 caracteres.');
+// Cambiar contraseña
+$("#change-pass-btn").onclick = () => { hideErr("pass-error"); $("#pass-current").value=$("#pass-new").value=$("#pass-confirm").value=""; $("#password-modal").classList.add("show"); };
+$("#pass-save-btn").onclick = async () => {
+  hideErr("pass-error");
+  const c=$("#pass-current").value, n=$("#pass-new").value, cf=$("#pass-confirm").value;
+  if (!c||!n||!cf) return showErr("pass-error","Completá todos los campos.");
+  if (n!==cf) return showErr("pass-error","Las contraseñas nuevas no coinciden.");
+  if (n.length<6) return showErr("pass-error","Mínimo 6 caracteres.");
   try {
-    await api('POST', '/api/auth/change-password', { currentPassword: curr, newPassword: next });
-    $('#password-modal').classList.remove('show');
-    toast('Contraseña actualizada correctamente');
-  } catch (e) {
-    showError('pass-error', e.message);
-  }
-});
+    await api("POST","/api/auth/change-password",{currentPassword:c,newPassword:n});
+    $("#password-modal").classList.remove("show"); toast("Contraseña actualizada");
+  } catch(e) { showErr("pass-error",e.message); }
+};
 
-// ── Productos ─────────────────────────────────────────────────────────────
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  ["catalogo","pedidos","faqs","contactos","config"].forEach(t => {
+    $("#page-"+t).style.display = t===tab ? "" : "none";
+    $("#tab-"+t)?.classList.toggle("active", t===tab);
+  });
+  if (tab==="pedidos") loadOrders();
+  if (tab==="faqs") loadFaqs();
+  if (tab==="contactos") loadContacts();
+  if (tab==="config") loadConfig();
+}
+
+async function loadBadges() {
+  try {
+    const data = await api("GET","/api/stats");
+    const oBadge = $("#badge-pedidos"), cBadge = $("#badge-contactos");
+    if (data.orders>0) { oBadge.textContent=data.orders; oBadge.style.display=""; }
+    if (data.unread_contacts>0) { cBadge.textContent=data.unread_contacts; cBadge.style.display=""; }
+  } catch {}
+}
+
+// ── Catálogo ──────────────────────────────────────────────────────────────────
 async function loadProducts() {
   try {
-    currentProducts = await api('GET', '/api/products');
-    renderTable();
+    currentProducts = await api("GET","/api/products/all");
+    renderProductsTable();
     updateStats();
-  } catch (e) {
-    toast(e.message, 'error');
-  }
+  } catch(e) { toast(e.message,"error"); }
 }
 
 function updateStats() {
-  $('#stat-total').textContent = currentProducts.length;
-  $('#stat-retro').textContent = currentProducts.filter(p => p.era === 'Retro').length;
-  $('#stat-actual').textContent = currentProducts.filter(p => p.era === 'Actual').length;
-  const paises = new Set(currentProducts.map(p => p.country)).size;
-  $('#stat-paises').textContent = paises;
+  const active = currentProducts.filter(p=>p.active);
+  $("#stat-total").textContent = active.length;
+  $("#stat-jugador").textContent = active.filter(p=>p.jersey_type==="jugador").length;
+  $("#stat-fan").textContent = active.filter(p=>p.jersey_type==="fan").length;
+  $("#stat-retro").textContent = active.filter(p=>p.jersey_type==="retro").length;
 }
 
-function renderTable() {
-  const tbody = $('#products-tbody');
-  if (currentProducts.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
-      <strong>Ninguna camiseta cargada todavía.</strong>
-      <span>Usá el botón "Agregar camiseta" para empezar.</span>
-    </div></td></tr>`;
+function renderProductsTable() {
+  const tbody = $("#products-tbody");
+  if (!currentProducts.length) {
+    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><strong>Sin camisetas cargadas.</strong><span>Usá el botón "Agregar camiseta".</span></div></td></tr>`;
     return;
   }
-  tbody.innerHTML = currentProducts.map(p => `
+  tbody.innerHTML = currentProducts.map(p=>`
     <tr>
       <td>
-        <div class="td-name">${escHtml(p.name)}</div>
-        ${p.subtitle ? `<div style="font-size:12px;color:var(--gris);font-style:italic">${escHtml(p.subtitle)}</div>` : ''}
+        <div style="font-weight:700;font-size:13px">${esc(p.name)}</div>
+        ${p.subtitle?`<div style="font-size:11px;color:var(--gris);font-style:italic">${esc(p.subtitle)}</div>`:""}
+        ${!p.active?`<span class="td-badge" style="margin-top:4px;display:inline-block">Inactivo</span>`:""}
       </td>
-      <td>${escHtml(p.country)}</td>
-      <td><span class="td-badge">${escHtml(p.type)}</span></td>
-      <td><span class="td-badge">${escHtml(p.era)}</span></td>
-      <td style="font-family:var(--mono)">${p.year}</td>
-      <td class="td-price">${formatPrice(p.price)}</td>
-      <td>
-        <div class="palette-dots">
-          <div class="palette-dot" style="background:${escHtml(p.palette[0])}"></div>
-          <div class="palette-dot" style="background:${escHtml(p.palette[1])}"></div>
-        </div>
-      </td>
-      <td>
-        <div class="td-actions">
-          <button class="btn btn-ghost btn-sm" onclick="openEdit('${escHtml(p.id)}')">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="openDelete('${escHtml(p.id)}')">Borrar</button>
-        </div>
-      </td>
+      <td style="font-size:12px">${esc(p.liga)}</td>
+      <td style="font-size:12px">${esc(p.equipo)}</td>
+      <td><span class="td-badge ${esc(p.jersey_type)}">${esc(p.jersey_type)}</span></td>
+      <td style="font-family:var(--mono);font-size:12px">${p.year}</td>
+      <td class="td-price">${fmt(p.price)}</td>
+      <td style="font-family:var(--mono);font-size:10px;letter-spacing:0.05em">${(p.sizes||[]).join(", ")}</td>
+      <td><div class="palette-dots">
+        <div class="palette-dot" style="background:${esc((p.palette||[])[0]||'#fff')}"></div>
+        <div class="palette-dot" style="background:${esc((p.palette||[])[1]||'#000')}"></div>
+      </div></td>
+      <td><div class="td-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openEdit('${esc(p.id)}')">Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="openDeleteProduct('${esc(p.id)}')">Borrar</button>
+      </div></td>
     </tr>
-  `).join('');
+  `).join("");
 }
 
-function escHtml(str) {
-  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// Inicializar selects de liga en el modal
+function initLigaSelect() {
+  const sel = $("#f-liga");
+  sel.innerHTML = '<option value="">— Seleccioná —</option>' +
+    Object.keys(LIGAS).map(l=>`<option value="${esc(l)}">${esc(l)}</option>`).join("");
 }
 
-// ── Modal add/edit ─────────────────────────────────────────────────────────
+function updateEquiposSelect(selectedEquipo="") {
+  const liga = $("#f-liga").value;
+  const sel = $("#f-equipo");
+  const equipos = LIGAS[liga] || [];
+  sel.innerHTML = equipos.length
+    ? ['<option value="">— Seleccioná equipo —</option>', ...equipos.map(e=>`<option value="${esc(e)}"${e===selectedEquipo?" selected":""}>${esc(e)}</option>`)].join("")
+    : '<option value="">— Primero elegí liga —</option>';
+}
+
+function setAutoPrice() {
+  const type = $("#f-jersey_type").value;
+  if (JERSEY_PRICES[type] && !editingId) {
+    $("#f-price").value = JERSEY_PRICES[type];
+  }
+}
+
+function buildSizesGrid(selectedSizes=[]) {
+  const grid = $("#sizes-grid");
+  grid.innerHTML = ALL_SIZES.map(s=>`
+    <input type="checkbox" class="size-chk" id="sz-${s}" value="${s}" ${selectedSizes.includes(s)?"checked":""} />
+    <label class="size-lbl" for="sz-${s}">${s}</label>
+  `).join("");
+}
+
+function getSelectedSizes() {
+  return ALL_SIZES.filter(s => document.getElementById("sz-"+s)?.checked);
+}
+
 function openAdd() {
-  editingId = null;
-  pendingImageFile = null;
-  clearError('modal-error');
-  $('#modal-title').textContent = 'Nueva camiseta';
-  ['name','subtitle','badge','desc'].forEach(k => $('#f-'+k).value = '');
-  ['country','type','era','version'].forEach(k => $('#f-'+k).value = '');
-  $('#f-year').value = '';
-  $('#f-price').value = '';
-  $('#f-color1').value = '#FFFFFF';
-  $('#f-color2').value = '#74ACDF';
-  updatePalettePreview();
-  resetUpload();
-  $('#product-modal').classList.add('show');
-  $('#f-name').focus();
+  editingId=null; pendingImageFile=null; hideErr("modal-error");
+  initLigaSelect(); updateEquiposSelect();
+  $("#modal-title").textContent="Nueva camiseta";
+  ["f-name","f-subtitle","f-badge","f-desc"].forEach(id=>$("#"+id).value="");
+  ["f-liga","f-equipo","f-jersey_type"].forEach(id=>$("#"+id).value="");
+  $("#f-version").value="Local";
+  $("#f-year").value=""; $("#f-price").value="";
+  $("#f-color1").value="#FFFFFF"; $("#f-color2").value="#74ACDF";
+  $("#f-customizable").checked=true; $("#f-active").checked=true;
+  buildSizesGrid(["S","M","L","XL","2XL","3XL","4XL"]);
+  updatePalettePreview(); resetUpload();
+  $("#product-modal").classList.add("show"); $("#f-name").focus();
 }
 
 function openEdit(id) {
-  const p = currentProducts.find(x => x.id === id);
-  if (!p) return;
-  editingId = id;
-  pendingImageFile = null;
-  clearError('modal-error');
-  $('#modal-title').textContent = 'Editar camiseta';
-  $('#f-name').value = p.name;
-  $('#f-subtitle').value = p.subtitle || '';
-  $('#f-badge').value = p.badge || '';
-  $('#f-desc').value = p.description || '';
-  $('#f-country').value = p.country;
-  $('#f-type').value = p.type;
-  $('#f-era').value = p.era;
-  $('#f-version').value = p.version;
-  $('#f-year').value = p.year;
-  $('#f-price').value = p.price;
-  $('#f-color1').value = p.palette[0] || '#FFFFFF';
-  $('#f-color2').value = p.palette[1] || '#74ACDF';
+  const p=currentProducts.find(x=>x.id===id); if (!p) return;
+  editingId=id; pendingImageFile=null; hideErr("modal-error");
+  initLigaSelect();
+  $("#modal-title").textContent="Editar camiseta";
+  $("#f-name").value=p.name; $("#f-subtitle").value=p.subtitle||""; $("#f-badge").value=p.badge||"";
+  $("#f-desc").value=p.description||""; $("#f-liga").value=p.liga;
+  updateEquiposSelect(p.equipo);
+  $("#f-equipo").value=p.equipo; $("#f-jersey_type").value=p.jersey_type;
+  $("#f-version").value=p.version||"Local"; $("#f-year").value=p.year; $("#f-price").value=p.price;
+  $("#f-color1").value=(p.palette||["#FFFFFF","#74ACDF"])[0];
+  $("#f-color2").value=(p.palette||["#FFFFFF","#74ACDF"])[1];
+  $("#f-customizable").checked=p.customizable!==false;
+  $("#f-active").checked=p.active!==false;
+  buildSizesGrid(p.sizes||ALL_SIZES);
   updatePalettePreview();
   if (p.image) {
-    $('#upload-preview').src = p.image;
-    $('#upload-preview').style.display = 'block';
-    $('#upload-label').textContent = 'Cambiar imagen';
-    $('#upload-note').textContent = 'Imagen actual mostrada arriba. Subí otra para reemplazarla.';
-  } else {
-    resetUpload();
-  }
-  $('#product-modal').classList.add('show');
-  $('#f-name').focus();
+    $("#upload-preview").src=p.image; $("#upload-preview").style.display="block";
+    $("#upload-label").textContent="Cambiar imagen";
+  } else { resetUpload(); }
+  $("#product-modal").classList.add("show"); $("#f-name").focus();
 }
 
-function closeProductModal() {
-  $('#product-modal').classList.remove('show');
-  editingId = null;
-  pendingImageFile = null;
-}
+function closeProductModal() { $("#product-modal").classList.remove("show"); editingId=null; pendingImageFile=null; }
+function updatePalettePreview() { $("#prev-c1").style.background=$("#f-color1").value; $("#prev-c2").style.background=$("#f-color2").value; }
+function resetUpload() { $("#f-image").value=""; $("#upload-preview").style.display="none"; $("#upload-label").textContent="Subir imagen"; }
 
-$('#add-btn').addEventListener('click', openAdd);
-$('#modal-close-btn').addEventListener('click', closeProductModal);
-$('#modal-cancel-btn').addEventListener('click', closeProductModal);
+$("#add-btn").onclick=openAdd;
+$("#modal-close-btn").onclick=closeProductModal;
+$("#modal-cancel-btn").onclick=closeProductModal;
+$("#product-modal").onclick=e=>{ if(e.target===$("#product-modal")) closeProductModal(); };
+$("#f-color1").oninput=updatePalettePreview;
+$("#f-color2").oninput=updatePalettePreview;
+$("#f-image").onchange=e=>{
+  const file=e.target.files[0]; if (!file) return;
+  pendingImageFile=file;
+  const r=new FileReader();
+  r.onload=ev=>{ $("#upload-preview").src=ev.target.result; $("#upload-preview").style.display="block"; $("#upload-label").textContent=file.name; };
+  r.readAsDataURL(file);
+};
 
-$('#product-modal').addEventListener('click', (e) => {
-  if (e.target === $('#product-modal')) closeProductModal();
-});
+$("#modal-save-btn").onclick=async()=>{
+  hideErr("modal-error");
+  const name=$("#f-name").value.trim(), liga=$("#f-liga").value, equipo=$("#f-equipo").value;
+  const jersey_type=$("#f-jersey_type").value, year=$("#f-year").value, price=$("#f-price").value;
+  if (!name) return showErr("modal-error","El nombre es obligatorio.");
+  if (!liga) return showErr("modal-error","Seleccioná una liga.");
+  if (!equipo) return showErr("modal-error","Seleccioná un equipo.");
+  if (!jersey_type) return showErr("modal-error","Seleccioná el tipo (Jugador, Fan o Retro).");
+  if (!year||isNaN(year)) return showErr("modal-error","Ingresá un año válido.");
+  if (!price||isNaN(price)||Number(price)<=0) return showErr("modal-error","Ingresá un precio válido.");
+  const sizes=getSelectedSizes();
+  if (!sizes.length) return showErr("modal-error","Seleccioná al menos un talle.");
 
-// Palette preview
-function updatePalettePreview() {
-  $('#prev-color1').style.background = $('#f-color1').value;
-  $('#prev-color2').style.background = $('#f-color2').value;
-}
-$('#f-color1').addEventListener('input', updatePalettePreview);
-$('#f-color2').addEventListener('input', updatePalettePreview);
-
-// Image upload preview
-$('#f-image').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  pendingImageFile = file;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    $('#upload-preview').src = ev.target.result;
-    $('#upload-preview').style.display = 'block';
-    $('#upload-label').textContent = file.name;
-    $('#upload-note').textContent = 'Imagen lista para subir al guardar.';
-  };
-  reader.readAsDataURL(file);
-});
-
-function resetUpload() {
-  $('#f-image').value = '';
-  $('#upload-preview').src = '';
-  $('#upload-preview').style.display = 'none';
-  $('#upload-label').textContent = 'Subir imagen';
-  $('#upload-note').textContent = 'Si no subís imagen se muestra la silueta SVG.';
-}
-
-$('#modal-save-btn').addEventListener('click', async () => {
-  clearError('modal-error');
-  const name = $('#f-name').value.trim();
-  const country = $('#f-country').value;
-  const type = $('#f-type').value;
-  const era = $('#f-era').value;
-  const version = $('#f-version').value;
-  const year = $('#f-year').value;
-  const price = $('#f-price').value;
-
-  if (!name) return showError('modal-error', 'El nombre es obligatorio.');
-  if (!country) return showError('modal-error', 'Seleccioná un país.');
-  if (!type) return showError('modal-error', 'Seleccioná un tipo (Selección / Club).');
-  if (!era) return showError('modal-error', 'Seleccioná la época.');
-  if (!version) return showError('modal-error', 'Seleccioná la versión.');
-  if (!year || isNaN(year)) return showError('modal-error', 'Ingresá un año válido.');
-  if (!price || isNaN(price) || Number(price) <= 0) return showError('modal-error', 'Ingresá un precio válido.');
-
-  const btn = $('#modal-save-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Guardando…';
-
+  const btn=$("#modal-save-btn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Guardando…';
   try {
-    let imageUrl = editingId ? (currentProducts.find(p => p.id === editingId)?.image || null) : null;
-    if (pendingImageFile) imageUrl = await uploadImage(pendingImageFile);
-
+    let imageUrl = editingId ? (currentProducts.find(p=>p.id===editingId)?.image||null) : null;
+    if (pendingImageFile) imageUrl=await uploadImage(pendingImageFile);
     const payload = {
-      name,
-      subtitle: $('#f-subtitle').value.trim(),
-      country,
-      type,
-      era,
-      version,
-      year: Number(year),
-      price: Number(price),
-      palette: [$('#f-color1').value, $('#f-color2').value],
-      badge: $('#f-badge').value.trim() || null,
-      description: $('#f-desc').value.trim(),
-      image: imageUrl,
+      name, subtitle:$("#f-subtitle").value.trim(), liga, equipo, jersey_type,
+      version:$("#f-version").value, year:Number(year), price:Number(price),
+      sizes, customizable:$("#f-customizable").checked,
+      palette:[$("#f-color1").value,$("#f-color2").value],
+      badge:$("#f-badge").value.trim()||null, description:$("#f-desc").value.trim(),
+      image:imageUrl, active:$("#f-active").checked,
     };
+    if (editingId) { await api("PUT",`/api/products/${editingId}`,payload); toast("Camiseta actualizada ✓"); }
+    else { await api("POST","/api/products",payload); toast("Camiseta agregada ✓"); }
+    closeProductModal(); await loadProducts();
+  } catch(e) { showErr("modal-error",e.message); }
+  finally { btn.disabled=false; btn.textContent="Guardar camiseta →"; }
+};
 
-    if (editingId) {
-      await api('PUT', `/api/products/${editingId}`, payload);
-      toast('Camiseta actualizada ✓');
-    } else {
-      await api('POST', '/api/products', payload);
-      toast('Camiseta agregada ✓');
-    }
-
-    closeProductModal();
+function openDeleteProduct(id) {
+  const p=currentProducts.find(x=>x.id===id);
+  deletingId=id;
+  $("#confirm-title").textContent="¿Eliminás esta camiseta?";
+  $("#confirm-text").textContent=p?p.name:"";
+  $("#confirm-modal").classList.add("show");
+  $("#confirm-ok-btn").onclick=deleteProduct;
+}
+async function deleteProduct() {
+  if (!deletingId) return;
+  const btn=$("#confirm-ok-btn"); btn.disabled=true;
+  try {
+    await api("DELETE",`/api/products/${deletingId}`);
+    toast("Camiseta eliminada"); $("#confirm-modal").classList.remove("show"); deletingId=null;
     await loadProducts();
-  } catch (e) {
-    showError('modal-error', e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Guardar camiseta →';
-  }
-});
+  } catch(e) { toast(e.message,"error"); }
+  finally { btn.disabled=false; }
+}
+$("#confirm-cancel-btn").onclick=()=>{ $("#confirm-modal").classList.remove("show"); deletingId=deletingFaqId=deletingContactId=null; };
+$("#confirm-modal").onclick=e=>{ if(e.target===$("#confirm-modal")){ $("#confirm-modal").classList.remove("show"); deletingId=deletingFaqId=deletingContactId=null; } };
 
-// ── Borrar ─────────────────────────────────────────────────────────────────
-function openDelete(id) {
-  deletingId = id;
-  const p = currentProducts.find(x => x.id === id);
-  $('#confirm-product-name').textContent = p ? p.name : '';
-  $('#confirm-modal').classList.add('show');
+// ── Pedidos ───────────────────────────────────────────────────────────────────
+async function loadOrders() {
+  try {
+    const orders=await api("GET","/api/orders");
+    const tbody=$("#orders-tbody");
+    if (!orders.length) {
+      tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><strong>Sin pedidos todavía.</strong><span>Los pedidos aparecerán cuando alguien compre en la tienda.</span></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML=orders.map(o=>`
+      <tr>
+        <td style="font-family:var(--mono);font-size:11px">#${o.number||"—"}</td>
+        <td style="font-family:var(--mono);font-size:10px;color:var(--gris)">${esc(o.id)}</td>
+        <td>
+          <div style="font-weight:600;font-size:13px">${esc(o.customer_name)}</div>
+          <div style="font-size:11px;color:var(--gris)">${esc(o.customer_email)}</div>
+        </td>
+        <td class="td-price">${fmt(o.total)}</td>
+        <td><span class="td-badge ${o.payment_status==="paid"?"paid":o.payment_status==="pending"?"pending":"new"}">${esc(o.payment_status)}</span></td>
+        <td><span class="td-badge ${o.status==="confirmed"?"paid":o.status}">${esc(o.status)}</span></td>
+        <td style="font-family:var(--mono);font-size:10px;white-space:nowrap">${fmtDate(o.created_at)}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="openOrderModal('${esc(o.id)}')">Ver</button></td>
+      </tr>
+    `).join("");
+  } catch(e) { toast(e.message,"error"); }
 }
 
-$('#confirm-cancel-btn').addEventListener('click', () => {
-  $('#confirm-modal').classList.remove('show');
-  deletingId = null;
-});
-
-$('#confirm-modal').addEventListener('click', (e) => {
-  if (e.target === $('#confirm-modal')) {
-    $('#confirm-modal').classList.remove('show');
-    deletingId = null;
-  }
-});
-
-$('#confirm-ok-btn').addEventListener('click', async () => {
-  if (!deletingId) return;
-  const btn = $('#confirm-ok-btn');
-  btn.disabled = true;
+async function openOrderModal(id) {
+  editingOrderId=id;
   try {
-    await api('DELETE', `/api/products/${deletingId}`);
-    toast('Camiseta eliminada');
-    $('#confirm-modal').classList.remove('show');
-    deletingId = null;
-    await loadProducts();
-  } catch (e) {
-    toast(e.message, 'error');
-  } finally {
-    btn.disabled = false;
-  }
-});
+    const o=await api("GET",`/api/orders/${id}`);
+    const items=Array.isArray(o.items)?o.items:[];
+    $("#order-detail-content").innerHTML=`
+      <div class="order-detail">
+        <h4>Cliente</h4>
+        <p style="margin-bottom:6px"><b>${esc(o.customer_name)}</b> · ${esc(o.customer_email)}</p>
+        <p style="font-size:13px;color:var(--gris)">${esc(o.customer_phone||"")} · ${esc(o.customer_address||"")} · ${esc(o.customer_city||"")}</p>
+        <h4 style="margin-top:16px">Productos</h4>
+        <div class="order-items">
+          ${items.map(it=>`<div class="order-item">
+            <span>${esc(it.name)} · T.${esc(it.size)} x${it.qty}${it.custom_name?` · ${esc(it.custom_name)} #${esc(it.custom_number)}`:""}${(it.patches||[]).length>0?` · parches`:""}</span>
+            <b style="font-family:var(--display);font-size:14px">${fmt(it.unit_price*it.qty)}</b>
+          </div>`).join("")}
+        </div>
+        <div class="order-totals">
+          <div class="ot-row"><span>Subtotal</span><b>${fmt(o.subtotal)}</b></div>
+          <div class="ot-row"><span>Envío</span><b>${o.shipping===0?"GRATIS":fmt(o.shipping)}</b></div>
+          <div class="ot-row ot-total"><span>Total</span><b>${fmt(o.total)}</b></div>
+        </div>
+        <h4 style="margin-top:16px">Estado del pedido</h4>
+        <div class="form-row" style="margin-top:8px">
+          <div class="field">
+            <label>Estado pago</label>
+            <select id="order-payment_status">
+              <option value="pending" ${o.payment_status==="pending"?"selected":""}>Pendiente</option>
+              <option value="paid" ${o.payment_status==="paid"?"selected":""}>Pagado</option>
+              <option value="refunded" ${o.payment_status==="refunded"?"selected":""}>Devuelto</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Estado pedido</label>
+            <select id="order-status">
+              <option value="new" ${o.status==="new"?"selected":""}>Nuevo</option>
+              <option value="confirmed" ${o.status==="confirmed"?"selected":""}>Confirmado</option>
+              <option value="preparing" ${o.status==="preparing"?"selected":""}>Preparando</option>
+              <option value="shipped" ${o.status==="shipped"?"selected":""}>Enviado</option>
+              <option value="delivered" ${o.status==="delivered"?"selected":""}>Entregado</option>
+              <option value="cancelled" ${o.status==="cancelled"?"selected":""}>Cancelado</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Notas internas</label>
+          <textarea id="order-notes" rows="2">${esc(o.notes||"")}</textarea>
+        </div>
+      </div>
+    `;
+    $("#order-modal").classList.add("show");
+  } catch(e) { toast(e.message,"error"); }
+}
 
-// ── Init ───────────────────────────────────────────────────────────────────
+function closeOrderModal() { $("#order-modal").classList.remove("show"); editingOrderId=null; }
+
+async function saveOrderStatus() {
+  if (!editingOrderId) return;
+  const btn=$("#order-save-btn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
+  try {
+    await api("PUT",`/api/orders/${editingOrderId}`,{
+      status:$("#order-status").value,
+      payment_status:$("#order-payment_status").value,
+      notes:$("#order-notes").value,
+    });
+    toast("Pedido actualizado ✓"); closeOrderModal(); await loadOrders();
+  } catch(e) { toast(e.message,"error"); }
+  finally { btn.disabled=false; btn.textContent="Guardar estado →"; }
+}
+
+// ── FAQs ──────────────────────────────────────────────────────────────────────
+async function loadFaqs() {
+  try {
+    const faqs=await api("GET","/api/faqs/all");
+    const wrap=$("#faqs-wrap");
+    if (!faqs.length) {
+      wrap.innerHTML=`<div class="empty-state"><strong>Sin preguntas.</strong><span>Agregá preguntas frecuentes.</span></div>`;
+      return;
+    }
+    wrap.innerHTML=`<div style="padding:0 20px"><div class="faq-list">${
+      faqs.map(f=>`
+        <div class="faq-row">
+          <div class="faq-sort">
+            <button onclick="moveFaq(${f.id},-1)" title="Subir">▲</button>
+            <button onclick="moveFaq(${f.id},1)" title="Bajar">▼</button>
+          </div>
+          <div style="flex:1">
+            <div class="faq-q-text">${esc(f.question)}</div>
+            <div class="faq-cat-tag">${esc(f.category)}${!f.active?' · <span style="color:var(--gris)">Inactiva</span>':''}</div>
+          </div>
+          <div class="td-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openFaqModal(${f.id})">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteFaq(${f.id})">Borrar</button>
+          </div>
+        </div>
+      `).join("")
+    }</div></div>`;
+  } catch(e) { toast(e.message,"error"); }
+}
+
+function openFaqModal(id) {
+  editingFaqId=id||null; hideErr("faq-error");
+  if (id) {
+    api("GET","/api/faqs/all").then(faqs=>{
+      const f=faqs.find(x=>x.id===id); if (!f) return;
+      $("#faq-q").value=f.question; $("#faq-a").value=f.answer;
+      $("#faq-cat").value=f.category; $("#faq-order").value=f.sort_order; $("#faq-active").checked=!!f.active;
+      $("#faq-modal-title").textContent="Editar pregunta";
+    });
+  } else {
+    $("#faq-q").value=""; $("#faq-a").value=""; $("#faq-cat").value="General";
+    $("#faq-order").value=0; $("#faq-active").checked=true;
+    $("#faq-modal-title").textContent="Nueva pregunta";
+  }
+  $("#faq-modal").classList.add("show"); $("#faq-q").focus();
+}
+function closeFaqModal() { $("#faq-modal").classList.remove("show"); editingFaqId=null; }
+$("#faq-save-btn").onclick=async()=>{
+  hideErr("faq-error");
+  const q=$("#faq-q").value.trim(), a=$("#faq-a").value.trim();
+  if (!q||!a) return showErr("faq-error","Pregunta y respuesta son obligatorias.");
+  const btn=$("#faq-save-btn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
+  try {
+    const payload={question:q, answer:a, category:$("#faq-cat").value, sort_order:Number($("#faq-order").value), active:$("#faq-active").checked};
+    if (editingFaqId) await api("PUT",`/api/faqs/${editingFaqId}`,payload);
+    else await api("POST","/api/faqs",payload);
+    toast(editingFaqId?"Pregunta actualizada ✓":"Pregunta agregada ✓");
+    closeFaqModal(); await loadFaqs();
+  } catch(e) { showErr("faq-error",e.message); }
+  finally { btn.disabled=false; btn.textContent="Guardar →"; }
+};
+function openDeleteFaq(id) {
+  deletingFaqId=id;
+  $("#confirm-title").textContent="¿Eliminás esta pregunta?";
+  $("#confirm-text").textContent="Esta acción no se puede deshacer.";
+  $("#confirm-modal").classList.add("show");
+  $("#confirm-ok-btn").onclick=deleteFaq;
+}
+async function deleteFaq() {
+  if (!deletingFaqId) return;
+  const btn=$("#confirm-ok-btn"); btn.disabled=true;
+  try {
+    await api("DELETE",`/api/faqs/${deletingFaqId}`);
+    toast("Pregunta eliminada"); $("#confirm-modal").classList.remove("show"); deletingFaqId=null;
+    await loadFaqs();
+  } catch(e) { toast(e.message,"error"); }
+  finally { btn.disabled=false; }
+}
+async function moveFaq(id, dir) {
+  try {
+    const faqs=await api("GET","/api/faqs/all");
+    const idx=faqs.findIndex(f=>f.id===id);
+    if (idx<0) return;
+    const f=faqs[idx];
+    await api("PUT",`/api/faqs/${id}`,{...f, sort_order:(f.sort_order||0)+dir*10});
+    await loadFaqs();
+  } catch {}
+}
+
+// ── Contactos ─────────────────────────────────────────────────────────────────
+async function loadContacts() {
+  try {
+    const contacts=await api("GET","/api/contacts");
+    const list=$("#contacts-list");
+    if (!contacts.length) {
+      list.innerHTML=`<div class="empty-state"><strong>Sin mensajes.</strong><span>Los mensajes del formulario de contacto aparecerán acá.</span></div>`;
+      return;
+    }
+    list.innerHTML=`<div style="border:1px solid var(--linea-w)">
+      ${contacts.map(c=>`
+        <div class="contact-row" style="padding:16px 20px;border-bottom:1px solid var(--linea-w)">
+          <div class="contact-from">
+            ${!c.read?'<span class="unread-dot"></span>':''}<b>${esc(c.name)}</b>
+            <small>${esc(c.email)}</small>
+            ${c.phone?`<small style="display:block">${esc(c.phone)}</small>`:""}
+            <small style="display:block;margin-top:4px;color:var(--gris)">${fmtDate(c.created_at)}</small>
+          </div>
+          <div>
+            ${c.subject?`<div style="font-family:var(--mono);font-size:10px;color:var(--celeste);margin-bottom:6px">${esc(c.subject)}</div>`:""}
+            <div class="contact-msg">${esc(c.message)}</div>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="markContact(${c.id},${c.read?0:1})">${c.read?"Marcar no leído":"Marcar leído"}</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteContact(${c.id})">Borrar</button>
+              <a href="mailto:${esc(c.email)}?subject=${esc(c.subject?'Re: '+c.subject:'Respuesta - El Diez Baires')}" class="btn btn-ghost btn-sm" style="text-decoration:none">Responder →</a>
+            </div>
+          </div>
+        </div>
+      `).join("")}
+    </div>`;
+  } catch(e) { toast(e.message,"error"); }
+}
+
+async function markContact(id, read) {
+  try { await api("PUT",`/api/contacts/${id}/read`,{read}); await loadContacts(); await loadBadges(); } catch {}
+}
+async function deleteContact(id) {
+  deletingContactId=id;
+  $("#confirm-title").textContent="¿Eliminás este mensaje?";
+  $("#confirm-text").textContent="";
+  $("#confirm-modal").classList.add("show");
+  $("#confirm-ok-btn").onclick=async()=>{
+    const btn=$("#confirm-ok-btn"); btn.disabled=true;
+    try {
+      await api("DELETE",`/api/contacts/${deletingContactId}`);
+      toast("Mensaje eliminado"); $("#confirm-modal").classList.remove("show");
+      await loadContacts();
+    } catch(e) { toast(e.message,"error"); }
+    finally { btn.disabled=false; }
+  };
+}
+
+// ── Configuración ─────────────────────────────────────────────────────────────
+async function loadConfig() {
+  try {
+    const s=await api("GET","/api/settings");
+    Object.entries(s).forEach(([k,v]) => {
+      const el=document.getElementById("cfg-"+k);
+      if (el) el.value=v;
+    });
+  } catch {}
+}
+
+async function saveConfig() {
+  const fields=["bank_name","bank_owner","bank_cbu","bank_alias","bank_account",
+                 "mp_access_token","mp_public_key","installments",
+                 "shipping_price","free_shipping_threshold",
+                 "store_email","store_whatsapp","store_instagram"];
+  const payload={};
+  fields.forEach(k=>{ const el=document.getElementById("cfg-"+k); if(el) payload[k]=el.value; });
+  try { await api("PUT","/api/settings",payload); toast("Configuración guardada ✓"); } catch(e) { toast(e.message,"error"); }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 checkAuth();
 </script>
 </body>

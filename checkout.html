@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Checkout · El Diez Baires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,900&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --negro: #0E1116; --tinta: #11151B; --blanco: #F4F1EA; --blanco-puro: #FFFFFF;
+  --celeste: #74ACDF; --azul: #0A2A5E; --azul-noche: #061638;
+  --oro: #F6B40E; --oro-osc: #C98C00; --gris: #6B6E76; --linea: rgba(14,17,22,0.12);
+  --display: "Playfair Display", serif;
+  --sans: "Inter Tight", sans-serif;
+  --mono: "JetBrains Mono", monospace;
+  --radius: 8px;
+  --green: #22c55e; --red: #ef4444; --amber: #f59e0b;
+}
+body { font-family: var(--sans); background: var(--blanco); color: var(--tinta); min-height:100vh; -webkit-font-smoothing:antialiased; }
+a { color:inherit; text-decoration:none; }
+button { font:inherit; cursor:pointer; }
+input, select, textarea { font:inherit; }
+
+/* ── Top bar ── */
+.topbar {
+  background: var(--azul-noche);
+  color: var(--blanco);
+  padding: 18px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid rgba(244,241,234,0.08);
+}
+.topbar-logo { font-family: var(--display); font-weight:900; font-size:22px; letter-spacing:-0.02em; white-space:nowrap; }
+.topbar-logo em { font-style:italic; color: var(--oro); margin-left:4px; }
+.topbar-back {
+  display: inline-flex; align-items:center; gap:8px;
+  font-family: var(--mono); font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+  color: rgba(244,241,234,0.7);
+  background: rgba(244,241,234,0.06); border: 1px solid rgba(244,241,234,0.14);
+  padding: 8px 16px; border-radius: 999px;
+  transition: background 0.15s, color 0.15s;
+}
+.topbar-back:hover { background: rgba(244,241,234,0.12); color: var(--blanco); }
+
+/* ── Main layout ── */
+.checkout-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 40px 80px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: start;
+}
+.section-title {
+  font-family: var(--display); font-weight:900; font-size:clamp(28px,4vw,48px);
+  line-height:0.95; letter-spacing:-0.02em; margin: 0 0 32px;
+}
+.section-title em { font-style:italic; color:var(--oro); font-weight:400; }
+
+/* ── Progress ── */
+.progress { display:flex; gap:0; margin-bottom:36px; }
+.prog-step {
+  display:flex; align-items:center; gap:8px;
+  font-family: var(--mono); font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+  color: var(--gris); padding: 0 20px 0 0;
+}
+.prog-step:first-child { padding-left: 0; }
+.prog-num {
+  width:28px; height:28px; border-radius:50%; border: 2px solid var(--linea);
+  display:grid; place-items:center; font-size:12px; font-weight:700; flex-shrink:0;
+}
+.prog-step.active .prog-num { background: var(--tinta); color: var(--blanco); border-color: var(--tinta); }
+.prog-step.done .prog-num { background: var(--green); color: #fff; border-color: var(--green); }
+.prog-sep { width:28px; height:2px; background: var(--linea); align-self:center; margin: 0 4px; flex-shrink:0; }
+.prog-step.done ~ .prog-sep, .prog-step.done ~ .prog-step .prog-sep { background: var(--green); }
+
+/* ── Form ── */
+.checkout-form { display:flex; flex-direction:column; gap:0; }
+.form-section { margin-bottom:32px; }
+.form-section h3 {
+  font-family: var(--mono); font-size:11px; letter-spacing:0.28em; text-transform:uppercase;
+  color: var(--gris); margin-bottom:16px;
+  display:flex; align-items:center; gap:8px;
+}
+.form-section h3::before { content:""; display:block; width:18px; height:1px; background:var(--linea); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.form-row.full { grid-template-columns:1fr; }
+.field { display:flex; flex-direction:column; gap:5px; }
+.field label { font-family:var(--mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--gris); }
+.field .req { color:var(--oro); }
+.field input, .field select, .field textarea {
+  border: 1.5px solid var(--linea);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size:15px; color:var(--tinta); background:var(--blanco-puro);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width:100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline:none; border-color:var(--azul); box-shadow:0 0 0 3px rgba(10,42,94,0.08);
+}
+.field select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6E76' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:36px; }
+
+/* Métodos de pago */
+.payment-methods { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.payment-opt {
+  border: 1.5px solid var(--linea);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  display:flex; flex-direction:column; gap:6px;
+  user-select:none;
+}
+.payment-opt:hover { border-color: var(--azul); }
+.payment-opt.selected { border-color:var(--azul); background:rgba(10,42,94,0.04); }
+.payment-opt input[type="radio"] { display:none; }
+.payment-opt-head {
+  display:flex; align-items:center; gap:10px;
+  font-weight:700; font-size:14px;
+}
+.payment-opt-head svg { color:var(--azul); flex-shrink:0; }
+.payment-check {
+  width:18px; height:18px; border-radius:50%; border:2px solid var(--linea);
+  margin-left:auto; flex-shrink:0;
+  transition: border-color 0.15s, background 0.15s;
+}
+.payment-opt.selected .payment-check { background:var(--azul); border-color:var(--azul); }
+.payment-opt small {
+  font-family:var(--mono); font-size:10px; letter-spacing:0.12em; color:var(--gris);
+  line-height:1.4;
+}
+.payment-badge {
+  display:inline-block; background:var(--azul); color:var(--blanco);
+  padding:2px 8px; border-radius:999px; font-family:var(--mono);
+  font-size:9px; letter-spacing:0.15em;
+}
+
+/* Botón principal */
+.btn-checkout {
+  background:var(--oro); color:var(--negro); border:none;
+  padding:18px 32px; border-radius:999px;
+  font-family:var(--mono); font-size:13px; letter-spacing:0.2em; text-transform:uppercase; font-weight:700;
+  width:100%; transition:background 0.15s, transform 0.1s;
+  margin-top:8px;
+}
+.btn-checkout:hover:not(:disabled) { background:#ffc31f; transform:translateY(-1px); }
+.btn-checkout:disabled { opacity:0.5; cursor:default; transform:none; }
+.btn-secondary {
+  background:transparent; color:var(--tinta); border:1.5px solid var(--linea);
+  padding:14px 24px; border-radius:999px;
+  font-family:var(--mono); font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+  transition:background 0.15s;
+}
+.btn-secondary:hover { background:rgba(14,17,22,0.04); border-color:var(--tinta); }
+
+/* ── Resumen del pedido ── */
+.order-summary {
+  background:var(--blanco-puro);
+  border:1px solid var(--linea);
+  position:sticky; top:90px;
+}
+.summary-head {
+  padding: 20px 24px 16px;
+  border-bottom:1px solid var(--linea);
+  font-family:var(--mono); font-size:11px; letter-spacing:0.24em; text-transform:uppercase; color:var(--gris);
+}
+.summary-items { padding:16px 24px; display:flex; flex-direction:column; gap:12px; }
+.sitem {
+  display:flex; gap:12px; align-items:flex-start;
+}
+.sitem-img {
+  width:56px; height:56px; flex-shrink:0; border:1px solid var(--linea);
+  background:var(--blanco); display:grid; place-items:center; overflow:hidden;
+}
+.sitem-img img { width:100%; height:100%; object-fit:contain; }
+.sitem-body { flex:1; }
+.sitem-name { font-weight:700; font-size:13px; line-height:1.3; }
+.sitem-meta { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; color:var(--gris); margin-top:2px; }
+.sitem-custom { font-family:var(--mono); font-size:10px; color:var(--azul); background:rgba(10,42,94,0.07); padding:2px 7px; border-radius:4px; display:inline-block; margin-top:3px; }
+.sitem-price { font-family:var(--display); font-weight:900; font-size:16px; white-space:nowrap; }
+.summary-totals {
+  padding:16px 24px;
+  border-top:1px solid var(--linea);
+  display:flex; flex-direction:column; gap:8px;
+}
+.summary-row { display:flex; justify-content:space-between; font-size:13px; }
+.summary-row span { color:var(--gris); }
+.summary-row b { font-family:var(--display); font-size:15px; }
+.summary-row.total b { font-size:22px; }
+.summary-row.free-ship b { color:var(--green); }
+.summary-free-hint {
+  font-family:var(--mono); font-size:10px; letter-spacing:0.1em;
+  color:var(--celeste); text-align:right; margin-top:-4px;
+}
+.summary-fine {
+  padding:12px 24px 16px;
+  border-top:1px dashed var(--linea);
+  font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--gris); text-align:center; line-height:1.6;
+}
+
+/* ── Confirmation / Result screens ── */
+.result-screen {
+  min-height: 60vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:60px 24px;
+  gap:20px;
+}
+.result-icon {
+  width:80px; height:80px; border-radius:50%; display:grid; place-items:center;
+  font-size:36px;
+}
+.result-icon.success { background:rgba(34,197,94,0.12); color:var(--green); }
+.result-icon.failure { background:rgba(239,68,68,0.12); color:var(--red); }
+.result-icon.pending { background:rgba(245,158,11,0.12); color:var(--amber); }
+.result-screen h2 { font-family:var(--display); font-weight:900; font-size:clamp(32px,5vw,56px); line-height:0.98; }
+.result-screen h2 em { font-style:italic; color:var(--oro); }
+.result-screen p { font-size:16px; line-height:1.6; color:var(--gris); max-width:520px; }
+.result-order {
+  background:var(--blanco-puro); border:1px solid var(--linea);
+  padding:20px 32px; display:flex; flex-direction:column; gap:8px;
+}
+.result-order-num { font-family:var(--mono); font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gris); }
+.result-order-id { font-family:var(--display); font-weight:900; font-size:22px; color:var(--tinta); }
+/* Transferencia confirmación */
+.bank-details {
+  background:var(--blanco-puro); border:1px solid var(--linea);
+  padding:24px 32px; text-align:left; max-width:480px; width:100%;
+}
+.bank-details h4 {
+  font-family:var(--mono); font-size:10px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gris); margin-bottom:16px;
+}
+.bank-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--linea); font-size:14px; }
+.bank-row:last-child { border-bottom:none; }
+.bank-row span:first-child { color:var(--gris); }
+.bank-row b { font-family:var(--mono); font-weight:700; letter-spacing:0.05em; }
+.bank-amount { font-family:var(--display); font-weight:900; font-size:28px; color:var(--tinta); margin:16px 0; }
+
+/* ── Error / Empty cart ── */
+.empty-cart {
+  min-height:60vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:16px; padding:40px 24px;
+}
+.empty-cart h2 { font-family:var(--display); font-style:italic; font-size:36px; font-weight:400; }
+.empty-cart p { color:var(--gris); font-size:15px; }
+
+/* ── Error msg ── */
+.error-msg {
+  background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25);
+  color:#dc2626; padding:12px 16px; border-radius:var(--radius); font-size:13px;
+  margin-bottom:16px; display:none;
+}
+.error-msg.show { display:block; }
+
+/* spinner */
+.spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(14,17,22,0.15); border-top-color:var(--negro); border-radius:50%; animation:spin 0.7s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .checkout-main { grid-template-columns:1fr; padding:24px 20px 60px; }
+  .order-summary { position:static; }
+  .topbar { padding:14px 20px; }
+  .form-row { grid-template-columns:1fr; }
+  .payment-methods { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-logo">EL DIEZ <em>BAIRES</em></div>
+  <a href="/" class="topbar-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Volver
+  </a>
+</header>
+
+<div id="app-checkout"></div>
+
+<script>
+const PATCHES = [
+  { id:"ucl",    label:"Champions League" },
+  { id:"uel",    label:"Europa League"    },
+  { id:"pl",     label:"Premier League"   },
+  { id:"laliga", label:"La Liga"          },
+  { id:"sa",     label:"Serie A"          },
+  { id:"cap",    label:"Capitán"          },
+  { id:"wc",     label:"Mundial"          },
+  { id:"ca",     label:"Copa América"     },
+];
+
+function fmt(n) {
+  return "$ " + Number(n).toLocaleString("es-AR", { maximumFractionDigits:0 });
+}
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function patchName(id) {
+  return (PATCHES.find(p=>p.id===id)||{}).label || id;
+}
+
+// Leer URL params
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get("order");
+const urlStatus = urlParams.get("status");
+
+// Cargar configuración de la tienda
+let storeSettings = {};
+fetch("/api/settings").then(r=>r.json()).then(s=>{ storeSettings=s; }).catch(()=>{});
+
+// ── Pantalla: Resultado de Pago (vuelta desde MP) ───────────────────────────
+if (orderId && urlStatus) {
+  renderResult();
+} else {
+  // Pantalla principal de checkout
+  const cart = (() => {
+    try { return JSON.parse(localStorage.getItem("eldiezCart")||"[]"); } catch { return []; }
+  })();
+
+  if (!cart.length) {
+    renderEmptyCart();
+  } else {
+    renderCheckout(cart);
+  }
+}
+
+// ── Render resultado ─────────────────────────────────────────────────────────
+async function renderResult() {
+  let orderData = null;
+  try {
+    const r = await fetch(`/api/orders/${orderId}`);
+    if (r.ok) orderData = await r.json();
+  } catch {}
+
+  const configs = {
+    success: { icon:"✓", cls:"success", title:"¡Pago aprobado!", subtitle:"Tu pedido está confirmado.", color:"var(--green)" },
+    failure: { icon:"✕", cls:"failure", title:"Pago rechazado.", subtitle:"No pudimos procesar tu pago. Intentá de nuevo.", color:"var(--red)" },
+    pending: { icon:"⏳", cls:"pending", title:"Pago pendiente.", subtitle:"Acreditación en proceso — te avisamos por email.", color:"var(--amber)" },
+  };
+  const c = configs[urlStatus] || configs.pending;
+
+  document.getElementById("app-checkout").innerHTML = `
+    <div class="result-screen">
+      <div class="result-icon ${c.cls}">${c.icon}</div>
+      <h2>${c.title.split("").map((ch,i) => i===0 ? `<em>${ch}</em>` : ch).join("")}</h2>
+      <p>${c.subtitle}</p>
+      ${orderData ? `
+        <div class="result-order">
+          <span class="result-order-num">Número de pedido</span>
+          <span class="result-order-id">${esc(orderData.id)}</span>
+          ${urlStatus==="success" ? `<span style="font-size:13px;color:var(--gris)">Total: <b>${fmt(orderData.total)}</b></span>` : ""}
+        </div>
+      ` : ""}
+      ${urlStatus==="success" ? `<p style="font-size:13px;color:var(--gris)">Te enviamos un email con el seguimiento. ¿Dudas? Escribinos por Instagram <b>@eldiezbaires</b>.</p>` : ""}
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="/" class="btn-checkout" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;width:auto;padding:14px 32px">
+          Seguir comprando →
+        </a>
+        ${urlStatus==="failure" ? `<button class="btn-secondary" onclick="history.back()">Intentar de nuevo</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+// ── Render carrito vacío ─────────────────────────────────────────────────────
+function renderEmptyCart() {
+  document.getElementById("app-checkout").innerHTML = `
+    <div class="empty-cart">
+      <div style="font-family:'Playfair Display',serif;font-size:80px;font-weight:900;font-style:italic;color:rgba(14,17,22,0.08)">10</div>
+      <h2>Tu carrito está vacío.</h2>
+      <p>Todavía no elegiste ninguna camiseta. Volvé al catálogo y encontrá la tuya.</p>
+      <a href="/" class="btn-checkout" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;width:auto;padding:14px 32px;margin-top:8px">
+        Ver catálogo →
+      </a>
+    </div>
+  `;
+}
+
+// ── Render checkout ──────────────────────────────────────────────────────────
+function renderCheckout(cart) {
+  const shippingPrice = Number(storeSettings.shipping_price || 5000);
+  const freeThreshold = Number(storeSettings.free_shipping_threshold || 100000);
+  const subtotal = cart.reduce((s,it) => s + (it.line_price||it.price||0)*it.qty, 0);
+  const shipping = subtotal >= freeThreshold ? 0 : shippingPrice;
+  const total = subtotal + shipping;
+
+  const itemsHtml = cart.map(it => `
+    <div class="sitem">
+      <div class="sitem-img">
+        ${it.image ? `<img src="${esc(it.image)}" alt="">` : `<svg viewBox="0 0 200 220" style="width:100%"><path d="M40 30 L75 15 Q100 30 125 15 L160 30 L185 55 L160 75 L155 85 L155 200 Q155 210 145 210 L55 210 Q45 210 45 200 L45 85 L40 75 L15 55 Z" fill="${esc((it.palette||['#ddd'])[0])}" stroke="rgba(0,0,0,0.1)" stroke-width="1"/></svg>`}
+      </div>
+      <div class="sitem-body">
+        <div class="sitem-name">${esc(it.name)}</div>
+        <div class="sitem-meta">${esc(it.equipo||'')} · Talle ${esc(it.size)} · x${it.qty}</div>
+        ${it.custom_name ? `<span class="sitem-custom">${esc(it.custom_name)} #${esc(it.custom_number)}</span>` : ""}
+        ${(it.patches||[]).length>0 ? `<span class="sitem-custom">${it.patches.map(patchName).map(esc).join(", ")}</span>` : ""}
+      </div>
+      <div class="sitem-price">${fmt((it.line_price||it.price||0)*it.qty)}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("app-checkout").innerHTML = `
+    <div class="checkout-main">
+      <!-- Formulario -->
+      <div>
+        <h1 class="section-title">Finalizá<br/><em>tu compra.</em></h1>
+
+        <div class="progress">
+          <div class="prog-step active">
+            <div class="prog-num">1</div>
+            <span>Datos</span>
+          </div>
+          <div class="prog-sep"></div>
+          <div class="prog-step">
+            <div class="prog-num">2</div>
+            <span>Pago</span>
+          </div>
+          <div class="prog-sep"></div>
+          <div class="prog-step">
+            <div class="prog-num">3</div>
+            <span>Confirmación</span>
+          </div>
+        </div>
+
+        <div class="error-msg" id="form-error"></div>
+
+        <div class="checkout-form">
+          <!-- Datos personales -->
+          <div class="form-section">
+            <h3>Tus datos</h3>
+            <div class="form-row">
+              <div class="field">
+                <label>Nombre completo <span class="req">*</span></label>
+                <input type="text" id="f-name" placeholder="Diego Armando Maradona" required autocomplete="name" />
+              </div>
+              <div class="field">
+                <label>Email <span class="req">*</span></label>
+                <input type="email" id="f-email" placeholder="diego@eldiez.com" required autocomplete="email" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Teléfono / WhatsApp <span class="req">*</span></label>
+                <input type="tel" id="f-phone" placeholder="+54 9 11..." required autocomplete="tel" />
+              </div>
+              <div class="field">
+                <label>Ciudad <span class="req">*</span></label>
+                <input type="text" id="f-city" placeholder="Buenos Aires" required autocomplete="address-level2" />
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="field">
+                <label>Dirección de entrega <span class="req">*</span></label>
+                <input type="text" id="f-address" placeholder="Calle, número, piso, depto" required autocomplete="street-address" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Método de pago -->
+          <div class="form-section">
+            <h3>Método de pago</h3>
+            <div class="payment-methods">
+              <label class="payment-opt selected" id="opt-card" onclick="selectPayment('card')">
+                <input type="radio" name="payment" value="card" checked />
+                <div class="payment-opt-head">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  Tarjeta de crédito
+                  <span class="payment-check"></span>
+                </div>
+                <small>Visa, Mastercard, Amex<br/>
+                  <span class="payment-badge">3, 6 y 12 cuotas sin interés</span>
+                </small>
+              </label>
+              <label class="payment-opt" id="opt-transfer" onclick="selectPayment('transfer')">
+                <input type="radio" name="payment" value="transfer" />
+                <div class="payment-opt-head">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                  Transferencia
+                  <span class="payment-check"></span>
+                </div>
+                <small>CBU / Alias<br/>Pago inmediato sin comisiones</small>
+              </label>
+            </div>
+          </div>
+
+          <button class="btn-checkout" id="submit-btn" onclick="submitOrder()">
+            Confirmar pedido · ${fmt(total)} →
+          </button>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:#6B6E76;text-align:center;margin-top:12px">
+            Pago seguro · Datos encriptados · 30 días de devolución
+          </p>
+        </div>
+      </div>
+
+      <!-- Resumen -->
+      <div class="order-summary">
+        <div class="summary-head">Tu pedido (${cart.reduce((s,i)=>s+i.qty,0)} prenda${cart.reduce((s,i)=>s+i.qty,0)!==1?"s":""})</div>
+        <div class="summary-items">${itemsHtml}</div>
+        <div class="summary-totals">
+          <div class="summary-row"><span>Subtotal</span><b>${fmt(subtotal)}</b></div>
+          <div class="summary-row ${shipping===0&&subtotal>0?'free-ship':''}">
+            <span>Envío</span>
+            <b>${shipping===0&&subtotal>0?"¡GRATIS!":fmt(shipping)}</b>
+          </div>
+          ${subtotal>0&&subtotal<freeThreshold?`<div class="summary-free-hint">Te faltan ${fmt(freeThreshold-subtotal)} para envío gratis</div>`:""}
+          <div class="summary-row total" style="padding-top:12px;border-top:1px solid var(--linea);margin-top:4px">
+            <span>Total</span><b>${fmt(total)}</b>
+          </div>
+        </div>
+        <div class="summary-fine">
+          Tarjeta hasta 12 cuotas sin interés<br/>
+          Envío a todo el país · Devolución 30 días
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Helpers de UI ────────────────────────────────────────────────────────────
+let selectedPayment = "card";
+
+function selectPayment(method) {
+  selectedPayment = method;
+  document.querySelectorAll(".payment-opt").forEach(el => el.classList.remove("selected"));
+  document.getElementById("opt-" + method).classList.add("selected");
+  document.querySelectorAll(".payment-opt input[type=radio]").forEach(r => { r.checked = r.value === method; });
+}
+
+function showError(msg) {
+  const el = document.getElementById("form-error");
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add("show");
+  el.scrollIntoView({ behavior:"smooth", block:"nearest" });
+}
+
+function hideError() {
+  const el = document.getElementById("form-error");
+  if (el) el.classList.remove("show");
+}
+
+// ── Envío del formulario ─────────────────────────────────────────────────────
+async function submitOrder() {
+  hideError();
+
+  const name    = document.getElementById("f-name")?.value?.trim();
+  const email   = document.getElementById("f-email")?.value?.trim();
+  const phone   = document.getElementById("f-phone")?.value?.trim();
+  const city    = document.getElementById("f-city")?.value?.trim();
+  const address = document.getElementById("f-address")?.value?.trim();
+
+  if (!name || !email || !phone || !city || !address)
+    return showError("Completá todos los campos obligatorios.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    return showError("Ingresá un email válido.");
+
+  const cart = (() => {
+    try { return JSON.parse(localStorage.getItem("eldiezCart")||"[]"); } catch { return []; }
+  })();
+
+  if (!cart.length) return showError("Tu carrito está vacío.");
+
+  const btn = document.getElementById("submit-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Procesando…';
+
+  try {
+    const items = cart.map(it => ({
+      product_id: it.id,
+      name: it.name + (it.version && it.version!=="Local" ? ` ${it.version}` : ""),
+      size: it.size,
+      qty: it.qty,
+      unit_price: it.line_price || it.price || 0,
+      custom_name: it.custom_name || "",
+      custom_number: it.custom_number || "",
+      patches: it.patches || [],
+    }));
+
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customer: { name, email, phone, address, city },
+        items,
+        payment_method: selectedPayment,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Error al procesar el pedido");
+
+    // Limpiar carrito
+    localStorage.removeItem("eldiezCart");
+
+    if (selectedPayment === "card") {
+      if (data.mp?.init_point) {
+        window.location.href = data.mp.init_point;
+      } else if (data.mp?.sandbox_init_point) {
+        window.location.href = data.mp.sandbox_init_point;
+      } else {
+        renderTransferConfirmation(data, cart);
+      }
+    } else {
+      renderTransferConfirmation(data, cart);
+    }
+  } catch (err) {
+    showError(err.message || "Error al procesar el pedido. Intentá de nuevo.");
+    btn.disabled = false;
+    btn.textContent = `Confirmar pedido →`;
+  }
+}
+
+// ── Confirmación transferencia ───────────────────────────────────────────────
+function renderTransferConfirmation(data, cart) {
+  const isCard = data.payment_method === "card";
+  const bank = data.bank || {};
+
+  document.getElementById("app-checkout").innerHTML = `
+    <div class="result-screen">
+      <div class="result-icon success">✓</div>
+      <h2><em>¡</em>Pedido recibido!</h2>
+      <p>${isCard ? "Estamos procesando tu pago con tarjeta." : "Realizá la transferencia para confirmar tu pedido."}</p>
+
+      <div class="result-order">
+        <span class="result-order-num">Número de pedido</span>
+        <span class="result-order-id">${esc(data.id)}</span>
+        <span style="font-size:13px;color:var(--gris)">Total: <b>${fmt(data.total)}</b></span>
+        ${data.shipping === 0 ? `<span style="font-size:12px;color:#22c55e;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em">ENVÍO GRATIS ✓</span>` : `<span style="font-size:12px;color:#6B6E76">Envío: ${fmt(data.shipping)}</span>`}
+      </div>
+
+      ${!isCard && bank.cbu ? `
+        <div class="bank-details">
+          <h4>Datos para la transferencia</h4>
+          <div class="bank-row"><span>Banco</span><b>${esc(bank.bank||'')}</b></div>
+          ${bank.cbu ? `<div class="bank-row"><span>CBU</span><b>${esc(bank.cbu)}</b></div>` : ""}
+          ${bank.alias ? `<div class="bank-row"><span>Alias</span><b>${esc(bank.alias)}</b></div>` : ""}
+          <div class="bank-row"><span>Titular</span><b>${esc(bank.owner||'')}</b></div>
+          <div class="bank-amount">${fmt(data.total)}</div>
+          <p style="font-size:12px;color:#6B6E76;margin-top:8px">Enviá el comprobante por Instagram <b>@eldiezbaires</b> o WhatsApp indicando tu número de pedido.</p>
+        </div>
+      ` : ""}
+
+      ${!isCard && !bank.cbu ? `
+        <p style="font-size:14px;max-width:480px">
+          Te contactamos en breve por email con los datos bancarios para realizar la transferencia.
+          Tu pedido es <b>${esc(data.id)}</b>.
+        </p>
+      ` : ""}
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+        <a href="/" class="btn-checkout" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;width:auto;padding:14px 32px">
+          Seguir comprando →
+        </a>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
