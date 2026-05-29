@@ -60,23 +60,23 @@ function AutographStamp({ rotate = -8, size = 180, label = "AUTÉNTICO" }) {
             <feDisplacementMap in="SourceGraphic" scale="2" />
           </filter>
         </defs>
-        <g filter="url(#rough)" stroke="#F6B40E" fill="none" strokeWidth="2.5" opacity="0.85">
+        <g filter="url(#rough)" stroke="#1E63C4" fill="none" strokeWidth="2.5" opacity="0.85">
           <circle cx="100" cy="100" r="88" />
           <circle cx="100" cy="100" r="78" strokeWidth="1.2" />
         </g>
         <text x="100" y="92" textAnchor="middle"
               fontFamily="'Playfair Display', serif" fontSize="28"
-              fontWeight="900" fill="#F6B40E" letterSpacing="2">
+              fontWeight="900" fill="#1E63C4" letterSpacing="2">
           {label}
         </text>
         <text x="100" y="120" textAnchor="middle"
               fontFamily="'JetBrains Mono', monospace" fontSize="9"
-              fill="#F6B40E" letterSpacing="3" opacity="0.85">
+              fill="#1E63C4" letterSpacing="3" opacity="0.85">
           EL DIEZ BAIRES · BS AS
         </text>
         <text x="100" y="138" textAnchor="middle"
               fontFamily="'JetBrains Mono', monospace" fontSize="8"
-              fill="#F6B40E" letterSpacing="2" opacity="0.7">
+              fill="#1E63C4" letterSpacing="2" opacity="0.7">
           ★ ORIGINAL ★
         </text>
       </svg>
@@ -112,7 +112,7 @@ function VintageTicket({ section = "POPULAR", row = "F", seat = "10", date = "22
 }
 
 // "10" gigante decorativo de fondo
-function GiantTen({ style, opacity = 0.08, color = "#F6B40E" }) {
+function GiantTen({ style, opacity = 0.08, color = "#1E63C4" }) {
   return (
     <div
       aria-hidden="true"

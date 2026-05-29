@@ -1,7 +1,7 @@
 /* === EL DIEZ BAIRES — estética editorial / barrio / cancha === */
 
 :root {
-  --blanco: #F4F1EA;        /* hueso, papel viejo */
+  --blanco: #F5F7FA;
   --blanco-puro: #FFFFFF;
   --negro: #0E1116;
   --tinta: #11151B;
@@ -9,10 +9,10 @@
   --celeste-claro: #B7D4F0;
   --azul: #0A2A5E;
   --azul-noche: #061638;
-  --oro: #F6B40E;
-  --oro-oscuro: #C98C00;
+  --oro: #1E63C4;
+  --oro-oscuro: #1A4F9F;
   --gris: #6B6E76;
-  --gris-claro: #D9D5CC;
+  --gris-claro: #DDE3EE;
   --linea: rgba(14,17,22,0.12);
 
   --font-display: "Playfair Display", "Times New Roman", serif;
@@ -139,7 +139,7 @@ button { font: inherit; cursor: pointer; }
 .hero-eyebrow.center { justify-content: center; }
 .hero-eyebrow .dot {
   width: 8px; height: 8px; border-radius: 50%; background: var(--oro);
-  box-shadow: 0 0 0 4px rgba(246,180,14,0.18);
+  box-shadow: 0 0 0 4px rgba(30,99,196,0.18);
 }
 .hero-eyebrow .dot.dark { background: var(--oro); }
 
@@ -199,8 +199,8 @@ button { font: inherit; cursor: pointer; }
   transition: transform 0.15s, background 0.2s, color 0.2s, border-color 0.2s;
 }
 .btn:hover { transform: translateY(-1px); }
-.btn-primary { background: var(--oro); color: var(--negro); }
-.btn-primary:hover { background: #ffc31f; }
+.btn-primary { background: var(--oro); color: #FFFFFF; }
+.btn-primary:hover { background: var(--oro-oscuro); }
 .btn-ghost { color: var(--blanco); border-color: rgba(255,255,255,0.4); }
 .btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: var(--blanco); }
 .btn-ghost-dark { color: var(--tinta); border-color: rgba(14,17,22,0.3); }
@@ -231,7 +231,7 @@ button { font: inherit; cursor: pointer; }
 .hero-stadium .hero-title em {
   position: relative;
   display: inline-block;
-  background: linear-gradient(90deg, var(--oro) 0%, #FFE074 30%, var(--oro) 60%, var(--celeste) 90%, var(--oro) 100%);
+  background: linear-gradient(90deg, var(--celeste) 0%, var(--celeste-claro) 30%, var(--oro) 60%, var(--celeste-claro) 90%, var(--celeste) 100%);
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -260,8 +260,8 @@ button { font: inherit; cursor: pointer; }
   animation: latido 1.6s ease-in-out infinite;
 }
 @keyframes latido {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(246,180,14,0.18); }
-  50%      { box-shadow: 0 0 0 10px rgba(246,180,14,0.04); }
+  0%, 100% { box-shadow: 0 0 0 4px rgba(30,99,196,0.22); }
+  50%      { box-shadow: 0 0 0 10px rgba(30,99,196,0.06); }
 }
 
 .hero-stadium {
